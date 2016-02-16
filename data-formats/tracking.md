@@ -13,6 +13,7 @@ For certain events, we collect logs in JSON format, which is transferred to our 
 
 where :
 
+| Field | Description |
 | -------------: |:------------- |
 | stringified_json_data | a Javascript dictionary variable that contains all data we collected first converted into JSON object and second converted into a string |
 | version | a log version string in “integer.integer.integer” format |
