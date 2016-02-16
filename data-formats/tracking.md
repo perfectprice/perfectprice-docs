@@ -18,5 +18,5 @@ where :
 | stringified_json_data | a Javascript dictionary variable that contains all data we collected first converted into JSON object and second converted into a string |
 | version | a log version string in “integer.integer.integer” format |
 
-. Details of what must be collected at which event for stringified_json_data is explained in following sections. For version, please use “1.2.0”, for now, while we may ask for changes if needed in the future.
+Details of what must be collected at which event for stringified_json_data is explained in following sections. Version string starts from “1.0.0”, which is also the default value for logs from our old clients when version is omitted.
 
