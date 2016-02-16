@@ -2,7 +2,7 @@
 
 ### [Data Formats](data-formats)
 
-   Standardized formats of data in our system are summarized here.
+   Standardized format of data in our system is found here.
 
 ### [Data Formats](test.md)
 
