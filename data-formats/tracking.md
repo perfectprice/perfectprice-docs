@@ -48,10 +48,7 @@ where
 | -------------: |:------------- |
 | status | an integer valued status code, which is 0 if POST request is successfully processed, or non-zero values if there was any backend error. Details of possible error status codes and what must be done is explained in the following section. |
 | message | a string containing a brief note about what happened. |
-| data | additional meta information |
-
-| Field | Description |
-| -------------: |:------------- |
+| data | additional meta information : |
 | data/ppu | a unique hash assigned to this user, which is usually added into the cookie for key “ppu”. |
 | data/time | a timestamp that records logging time. |
 
