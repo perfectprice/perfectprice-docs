@@ -4,14 +4,6 @@
 
    Standardized format of data in our system is found here.
 
-### [Data Formats](test.md)
+### [Chatbot Architecture](otto)
 
-   All data are here.
-
-### [Data Formats](test.md)
-
-   All data are here.
-
-### [Data Formats](test.md)
-
-   All data are here.
+   Details about Otto chat-bot system.
