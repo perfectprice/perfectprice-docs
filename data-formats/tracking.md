@@ -10,3 +10,12 @@ For certain events, we collect logs in JSON format, which is transferred to our 
     "version": version
 }
 ```
+
+where :
+
+| -------------: |:------------- |
+| stringified_json_data | a Javascript dictionary variable that contains all data we collected first converted into JSON object and second converted into a string |
+| version | a log version string in “integer.integer.integer” format |
+
+. Details of what must be collected at which event for stringified_json_data is explained in following sections. For version, please use “1.2.0”, for now, while we may ask for changes if needed in the future.
+
