@@ -1,2 +1,2 @@
 # perfectprice-docs
-[Data Formats](test.md)
+[Data Formats](data-formas/test.md)
