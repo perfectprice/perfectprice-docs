@@ -52,6 +52,4 @@ where
 | data/ppu | a unique hash assigned to this user, which is usually added into the cookie for key “ppu”. |
 | data/time | a timestamp that records logging time. |
 
-Most of these information would be of not much interest except for Perfect Price and therefore no specific action is necessary.
-
 
