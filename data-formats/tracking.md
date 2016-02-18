@@ -1,4 +1,4 @@
-# Introduction
+# 1. Introduction
 
 Standard format of log that tracking JS should send to logging server is provided in this document. Here, “The Company” refers to the company that signs up for Perfect Price, Inc. service, i.e. a client company of Perfect Price, Inc.
 
@@ -7,8 +7,8 @@ For certain events, we collect logs in JSON format, which is transferred to our 
 
 ```json
 {
-    "json_text": stringified_json_data,
-    "version": version
+    "json_text": $stringified_json_data,
+    "version": $version
 }
 ```
 
@@ -26,8 +26,14 @@ Details of what must be collected at which event for stringified\_json\_data is 
 Once constructed, make a POST request to :
 
 ```
-http://log.pfpr.co/log/97da7ff7f0e157b0874d839cfd79876e
+http://log.pfpr.co/log/$company_hash
 ```
+
+where :
+
+| Field | Description |
+| -------------: |:------------- |
+| company_hash | a hash of client company, currently MD5 |
 
 Response for this call is :
 
@@ -54,22 +60,460 @@ where
 | data/time | a timestamp that records logging time. |
 
 
-### Handling Errors##### Connection ErrorsIf our log server at log.pfpr.co is not responding or connectable, then logs sent will not be saved in our backend. Unless such logs are queued either at browser or some other server and resent, logs will be permanently lost. We our internal alerting on to avoid any service down time, so mostly this shouldn’t happen, but for safely, it is recommended to implement any actions to avoid log loss as much as possible. If such connection error persists consistently, please email us immediately at info@perfectprice.io.##### Backend ErrorsAll backend errors happened in log.pfpr.co, while sending logs is internally handled so no specific error handling is necessary from the browser side.##### Frontend ErrorsAny frontend errors except for connection exceptions must be handled appropriately to avoid any log loss. Unless tracking Javascript code is provided by Perfect Price, Inc., this is the responsibility of The Company. # Log DataThis section covers specifics of stringified\_json\_data explained in previous section.### Common Log Data FormatFor any log sent at page load event, stringified\_json\_data must be of this format, e.g. :```json{    "document": {        "base URI": "https://www.betabrand.com/",        "cookie": "",        "document URI": "https://www.betabrand.com/",        "domain": "www.betabrand.com",        "title": "Betabrand - Pants, Jackets, Hoodies, Breakthroughs",        "url": "https://www.betabrand.com/"    },    "id": "97da7ff7f0e157b0874d839cfd79876e",    "navigator": {        "app code name": "Mozilla",        "app name": "Netscape",        "app version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",        "cookie enabled": true,        "language": "en-US",        "online": true,        "platform": "MacIntel",        "product": "Gecko",        "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"    },    page_specific_data,    "screen": {        "available height": 832,        "available width": 1440,        "color depth": 24,        "height": 900,        "pixel depth": 24,        "width": 1440    },    "type": type_of_log,    "window": {        "closed": false,        "default status": "",        "inner height": 286,        "inner width": 1270,        "outer height": 832,        "outer weight": 1270,        "screen x": 22,        "screen y": 23,        "status": ""    }}```
-where page\_specific\_data and type\_of\_log differ on different pages and events. For single page apps, page view events include not only the initial page load, but also subsequent pages re-rendering due to clicks. For each of a list of specified such page views in single page apps, event must be sent by The Company, or Perfect Price, Inc. if our tracking Javascript is used.### Page-specific Log Data FormatThis section is tailored for Betabrand only.##### Item Detail View LogWhen a single item page is loaded, this must be sent. Example:Clicked Men’s -> PantsClicked on Nesting-Doll CordaroundsWhen this page finishes loading, a log must be sent, of which format will be shown below. To help the log data, consider the options of this product :which is waist size and length.In this example, page\_specific\_data and type must be as shown in red below :```json{    "document": {        "base URI": "https://www.betabrand.com/",        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",        "domain": "www.betabrand.com",        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"    },    "id": "97da7ff7f0e157b0874d839cfd79876e",    "navigator": {        "app code name": "Mozilla",        "app name": "Netscape",        "app version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",        "cookie enabled": true,        "language": "en-US",        "online": true,        "platform": "MacIntel",        "product": "Gecko",        "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"    },    "page": {        "product": {            "image": "https://static5.betabrands.com/media/catalog/product/cache/1/image/1150x673/0dc2d03fe217f8c83829496872af24a0/n/e/nesting_doll_cordarounds_4.jpg",            "name": "Nesting-Doll Cordarounds",            "price": "98.00",            "discount": "12.00",            "currency": "USD",            "market": "en-US",            "product_options": [                {                    "type": "Waist",                    "values": [                        "28",                        "30",                        "32",                        "34",                        "36",                        "38",                        "40"                    ]                },                {                    "type": "Length",                    "values": [                        "32",                        "36"                    ]                }            ]        }    },    "screen": {        "available height": 832,        "available width": 1440,        "color depth": 24,        "height": 900,        "pixel depth": 24,        "width": 1440    },    "type": "pageview",    "window": {        "closed": false,        "default status": "",        "inner height": 206,        "inner width": 1270,        "outer height": 832,        "outer weight": 1270,        "screen x": 22,        "screen y": 23,        "status": ""    }}
-```where
+### Handling Errors
+
+##### Connection Errors
+If our log server [log.pfpr.co](log.pfpr.co) is not responding or connectable, then logs sent will not be saved in our backend. Unless such logs are queued either at browser or some other server and resent, logs will be permanently lost. For safety, it is recommended to implement any actions to avoid log loss as much as possible, such as local queueing. 
+
+##### Backend Errors
+All backend errors happened in [log.pfpr.co](log.pfpr.co), while sending logs is internally handled so no specific error handling is necessary from the browser side.
+
+##### Frontend Errors
+Any frontend errors except for connection exceptions must be handled appropriately to avoid any log loss. Unless tracking Javascript code is provided by us, this is the responsibility of The Company.
+
+
+### Coding Rules
+
+##### Namespacing
+To avoid conflict with any other existing JS on The Company's page, apply proper namespacing, e.g. prefixing functions or variables, etc.
+
+##### JQuery
+If JQuery is necessary, take an appropriate action to avoid version conflict.
+
+##### JSON Field Naming
+Default naming scheme for fields in any JSON data we generate is __lower\_case\_with\_underscords__.
+
+ 
+# 2. Log Data
+This section covers specifics of __stringified\_json\_data__ explained in previous section.
+
+### Common Format
+Any log sent at __page load event__ must be of this format :
+
+```json
+{
+    "document": {
+        "base_uri": "https://www.betabrand.com/",
+        "cookie": "",
+        "document_uri": "https://www.betabrand.com/",
+        "domain": "www.betabrand.com",
+        "title": "Betabrand - Pants, Jackets, Hoodies, Breakthroughs",
+        "url": "https://www.betabrand.com/"
+    },
+    "id": $company_hash,
+    "navigator": {
+        "app_code_name": "Mozilla",
+        "app_name": "Netscape",
+        "app_version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",
+        "cookie_enabled": true,
+        "language": "en-US",
+        "online": true,
+        "platform": "MacIntel",
+        "product": "Gecko",
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
+    },
+    $page_specific_data,
+    "screen": {
+        "available_height": 832,
+        "available_width": 1440,
+        "color_depth": 24,
+        "height": 900,
+        "pixel_depth": 24,
+        "width": 1440
+    },
+    "type": $type_of_log,
+    "window": {
+        "closed": false,
+        "default status": "",
+        "inner_height": 286,
+        "inner_width": 1270,
+        "outer_height": 832,
+        "outer_weight": 1270,
+        "screen_x": 22,
+        "screen_y": 23,
+        "status": ""
+    }
+}
+```
+
+where
+
 
 | Field | Description |
 | -------------: |:------------- |
-| image | URL of the thumbnail image. || name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. || price | the price, AS DISPLAYED on item detail page. || discount | the amount discounted from price, if this is also shown to user. | | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. || market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. || product_options | a list of option type and possible values each option can take for the given product. |For product options, a recommended format is a JSON array :```json[    {        "type": product_type,	     "values": [		     product_option_value1,	         product_option_value2,             product_option_value3,                      :        ]    }]
-```where :| Field | Description |
+| company_hash | a hash of client company, currently MD5 |
+| page\_specific\_data | data that varies based on the page it is in. More dtail is to follow in the following sections. |
+| type\_of\_log | a string that categorizes the context this log is generated, e.g. "pageview" if generated when page is loaded, or "checkout" if generated during cart checkout. |
+
+\* page\_specific\_data and type\_of\_log differ on different pages and events.
+
+For single page apps, page view events include not only the initial page load, but also subsequent pages re-rendering due to clicks. For each of a list of specified such page views in single page apps, event must be sent by The Company according to this format, or Perfect Price, Inc. if our tracking Javascript is used.
+
+
+### page\_specific\_data Format
+
+The format of this data depends on the content of pages that it is generated from. Most e-commerce or retail pages that 
+
+
+##### Item Detail View Log
+When a single item page is loaded, this must be sent. Example:
+
+Clicked Men’s -> Pants
+
+
+
+
+
+
+Clicked on Nesting-Doll Cordarounds
+
+
+
+When this page finishes loading, a log must be sent, of which format will be shown below. To help the log data, consider the options of this product :
+
+
+which is waist size and length.
+
+
+In this example, page\_specific\_data and type must be as shown in red below :
+
+```json
+{
+    "document": {
+        "base URI": "https://www.betabrand.com/",
+        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",
+        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",
+        "domain": "www.betabrand.com",
+        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",
+        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"
+    },
+    "id": $company_hash,
+    "navigator": {
+        "app_code_name": "Mozilla",
+        "app_name": "Netscape",
+        "app_version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",
+        "cookie_enabled": true,
+        "language": "en-US",
+        "online": true,
+        "platform": "MacIntel",
+        "product": "Gecko",
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
+    },
+    "page": {
+        "product": {
+            "image": "https://static5.betabrands.com/media/catalog/product/cache/1/image/1150x673/0dc2d03fe217f8c83829496872af24a0/n/e/nesting_doll_cordarounds_4.jpg",
+            "name": "Nesting-Doll Cordarounds",
+            "price": "98.00",
+            "discount": "12.00",
+            "currency": "USD",
+            "market": "en-US",
+            "product_options": [
+                {
+                    "type": "Waist",
+                    "values": [
+                        "28",
+                        "30",
+                        "32",
+                        "34",
+                        "36",
+                        "38",
+                        "40"
+                    ]
+                },
+                {
+                    "type": "Length",
+                    "values": [
+                        "32",
+                        "36"
+                    ]
+                }
+            ]
+        }
+    },
+    "screen": {
+        "available_height": 832,
+        "available_width": 1440,
+        "color_depth": 24,
+        "height": 900,
+        "pixel_depth": 24,
+        "width": 1440
+    },
+    "type": "pageview",
+    "window": {
+        "closed": false,
+        "default status": "",
+        "inner_height": 206,
+        "inner_width": 1270,
+        "outer_height": 832,
+        "outer_weight": 1270,
+        "screen_x": 22,
+        "screen_y": 23,
+        "status": ""
+    }
+}
+```
+
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| image | URL of the thumbnail image. |
+| name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. |
+| price | the price, AS DISPLAYED on item detail page. |
+| discount | the amount discounted from price, if this is also shown to user. | 
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
+| product_options | a list of option type and possible values each option can take for the given product. |
+
+
+For product options, a recommended format is a JSON array :
+
+```json
+[
+    {
+        "type": product_type,
+	     "values": [
+		     product_option_value1,
+	         product_option_value2,
+             product_option_value3,
+                      :
+        ]
+    }
+]
+```
+
+where :
+
+| Field | Description |
 | -------------: |:------------- |
 | product_type | a string that indicates the type of option, e.g. size, length, waist, etc. |
-| product\_option\_value | a string of a value that product_type can take. |If an option is not representable in this form, please make appropriate changes to suite your needs and let us know. If needed, we could suggest it as well.##### Add To Cart Log
-When an item is added to cart, this must be sent. Example:A user clicks “Add To Cart” button.Note that a user chose options : Waist : 36, Length: 36.A pop up opens up to show what’s added and what are in current cart.In this example, page\_specific\_data is in red below :```json{    "document": {        "base URI": "https://www.betabrand.com/",        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",        "domain": "www.betabrand.com",        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"    },    "id": "97da7ff7f0e157b0874d839cfd79876e",    "navigator": {        "app code name": "Mozilla",        "app name": "Netscape",        "app version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",        "cookie enabled": true,        "language": "en-US",        "online": true,        "platform": "MacIntel",        "product": "Gecko",        "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"    },    "cart": {        "items": [            {                "quantity": 1,                "name": "Nesting-Doll Cordarounds",                "price": "100.00",                "discount": "10.00",                "product_options": [                    "Waist": "36",                    "Length": "36"                ],                "added": true            },            {                "quantity": 1,                "name": "Some shirt",                "price": "70.00",                "discount": "8.00",                "product_options": [                    "Color": "Blue",                    "Size": "M"                ]            }        ],        "tax": "15",        "total": "170",        "total discount": "18",        "currency": "USD",        "market": "en-US"    },    "screen": {        "available height": 832,        "available width": 1440,        "color depth": 24,        "height": 900,        "pixel depth": 24,        "width": 1440    },    "type": "add_to_cart",    "window": {        "closed": false,        "default status": "",        "inner height": 206,        "inner width": 1270,        "outer height": 832,        "outer weight": 1270,        "screen x": 22,        "screen y": 23,        "status": ""    }}```
-where| Field | Description |
+| product\_option\_value | a string of a value that product_type can take. |
+
+If an option is not representable in this form, please make appropriate changes to suite your needs and let us know. If needed, we could suggest it as well.
+
+##### Add To Cart Log
+
+When an item is added to cart, this must be sent. Example:
+
+A user clicks “Add To Cart” button.
+
+
+
+Note that a user chose options : Waist : 36, Length: 36.
+
+
+
+A pop up opens up to show what’s added and what are in current cart.
+
+
+
+
+In this example, page\_specific\_data is in red below :
+
+```json
+{
+    "document": {
+        "base URI": "https://www.betabrand.com/",
+        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",
+        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",
+        "domain": "www.betabrand.com",
+        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",
+        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"
+    },
+    "id": "97da7ff7f0e157b0874d839cfd79876e",
+    "navigator": {
+        "app_code_name": "Mozilla",
+        "app_name": "Netscape",
+        "app_version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",
+        "cookie_enabled": true,
+        "language": "en-US",
+        "online": true,
+        "platform": "MacIntel",
+        "product": "Gecko",
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
+    },
+    "cart": {
+        "items": [
+            {
+                "quantity": 1,
+                "name": "Nesting-Doll Cordarounds",
+                "price": "100.00",
+                "discount": "10.00",
+                "product_options": [
+                    "Waist": "36",
+                    "Length": "36"
+                ],
+                "added": true
+            },
+            {
+                "quantity": 1,
+                "name": "Some shirt",
+                "price": "70.00",
+                "discount": "8.00",
+                "product_options": [
+                    "Color": "Blue",
+                    "Size": "M"
+                ]
+            }
+        ],
+        "tax": "15",
+        "total": "170",
+        "total discount": "18",
+        "currency": "USD",
+        "market": "en-US"
+    },
+    "screen": {
+        "available_height": 832,
+        "available_width": 1440,
+        "color_depth": 24,
+        "height": 900,
+        "pixel_depth": 24,
+        "width": 1440
+    },
+    "type": "add_to_cart",
+    "window": {
+        "closed": false,
+        "default status": "",
+        "inner_height": 206,
+        "inner_width": 1270,
+        "outer_height": 832,
+        "outer_weight": 1270,
+        "screen_x": 22,
+        "screen_y": 23,
+        "status": ""
+    }
+}
+```
+
+where
+
+| Field | Description |
 | -------------: |:------------- |
-| items | a list of items contained in the cart, which contains sub fields : || items/quantity | an integer value that contains the count of this item in cart || items/name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. || items/price | the price, AS DISPLAYED on item detail page. || items/discount | the amount discounted from price, if applied.  || product_options | a list of option type and value(s) selected for this item in cart. || added | an optional Boolean value which must be set to true if this item is added in this event, default = false. || tax | total tax applied. || total | sum of the item price x quantity for all items. || total\_discount | sum of discounts applied. || currency | an optional three capital letter currency code (ISO 4217), default = “USD”. || market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |2.2.3. Purchase (Checkout) LogWhen an item is purchased, this must be sent. Example:A user clicks “Checkout” button, e.g. in the pop upor in the cart slide section :Then in the checkout page user clicks “Place Order” in order page.In this example, page\_specific\_data is in red below :
-```json{    "document": {        "base URI": "https://www.betabrand.com/",        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",        "domain": "www.betabrand.com",        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"    },    "id": "97da7ff7f0e157b0874d839cfd79876e",    "navigator": {        "app code name": "Mozilla",        "app name": "Netscape",        "app version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",        "cookie enabled": true,        "language": "en-US",        "online": true,        "platform": "MacIntel",        "product": "Gecko",        "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"    },    "checkout": {        "items": [            {                "quantity": 1,                "name": "Nesting-Doll Corarounds",                "price": "100.00",                "discount": "10.00",                "product_options": [                    "Waist": "36",                    "Length": "36"                ]            },            {                "quantity": 1,                "name": "Some shirt",                "price": "70.00",                "discount": "8.00",                "product_options": [                    "Color": "Blue",                    "Size": "M"                ]            }        ],        "shipping": {            "option": "Fast (3 Days)",            "cost": "16.95"        },        "tax": "15",        "total": "170",        "total_discount": "18",        "currency": "USD",        "market": "en-US"    },    "screen": {        "available height": 832,        "available width": 1440,        "color depth": 24,        "height": 900,        "pixel depth": 24,        "width": 1440    },    "type": "checkout",    "window": {        "closed": false,        "default status": "",        "inner height": 206,        "inner width": 1270,        "outer height": 832,        "outer weight": 1270,        "screen x": 22,        "screen y": 23,        "status": ""    }}```
-where| Field | Description |
+| items | a list of items contained in the cart, which contains sub fields : |
+| items/quantity | an integer value that contains the count of this item in cart |
+| items/name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. |
+| items/price | the price, AS DISPLAYED on item detail page. |
+| items/discount | the amount discounted from price, if applied.  |
+| product_options | a list of option type and value(s) selected for this item in cart. |
+| added | an optional Boolean value which must be set to true if this item is added in this event, default = false. |
+| tax | total tax applied. |
+| total | sum of the item price x quantity for all items. |
+| total\_discount | sum of discounts applied. |
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
+
+2.2.3. Purchase (Checkout) Log
+When an item is purchased, this must be sent. Example:
+
+A user clicks “Checkout” button, e.g. in the pop up
+
+
+
+or in the cart slide section :
+
+
+
+
+Then in the checkout page user clicks “Place Order” in order page.
+
+
+
+
+In this example, page\_specific\_data is in red below :
+
+```json
+{
+    "document": {
+        "base URI": "https://www.betabrand.com/",
+        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",
+        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",
+        "domain": "www.betabrand.com",
+        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",
+        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"
+    },
+    "id": "97da7ff7f0e157b0874d839cfd79876e",
+    "navigator": {
+        "app_code_name": "Mozilla",
+        "app_name": "Netscape",
+        "app_version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",
+        "cookie_enabled": true,
+        "language": "en-US",
+        "online": true,
+        "platform": "MacIntel",
+        "product": "Gecko",
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
+    },
+    "checkout": {
+        "items": [
+            {
+                "quantity": 1,
+                "name": "Nesting-Doll Corarounds",
+                "price": "100.00",
+                "discount": "10.00",
+                "product_options": [
+                    "Waist": "36",
+                    "Length": "36"
+                ]
+            },
+            {
+                "quantity": 1,
+                "name": "Some shirt",
+                "price": "70.00",
+                "discount": "8.00",
+                "product_options": [
+                    "Color": "Blue",
+                    "Size": "M"
+                ]
+            }
+        ],
+        "shipping": {
+            "option": "Fast (3 Days)",
+            "cost": "16.95"
+        },
+        "tax": "15",
+        "total": "170",
+        "total_discount": "18",
+        "currency": "USD",
+        "market": "en-US"
+    },
+    "screen": {
+        "available_height": 832,
+        "available_width": 1440,
+        "color_depth": 24,
+        "height": 900,
+        "pixel_depth": 24,
+        "width": 1440
+    },
+    "type": "checkout",
+    "window": {
+        "closed": false,
+        "default status": "",
+        "inner_height": 206,
+        "inner_width": 1270,
+        "outer_height": 832,
+        "outer_weight": 1270,
+        "screen_x": 22,
+        "screen_y": 23,
+        "status": ""
+    }
+}
+```
+
+where
+
+| Field | Description |
 | -------------: |:------------- |
-| items | a list of items contained in the cart, which contains sub fields : || items/quantity | an integer value that contains the count of this item in cart || items/name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. || items/price | the price, AS DISPLAYED on item detail page. || items/discount | the amount discounted from price, if applied. || items/product_options | a list of option type and value(s) selected for this item in cart. || shipping | shipping method containing sub fields : || shipping/option | string containing the shipping option, e.g. Fast (3 Days), Standard (5-7 Days), etc. || shipping/cost | the shipping cost. || tax | total tax applied. || total | sum of the item price x quantity for all items. || total\_discount | sum of discounts applied. || currency | an optional three capital letter currency code (ISO 4217), default = “USD”. || market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
+| items | a list of items contained in the cart, which contains sub fields : |
+| items/quantity | an integer value that contains the count of this item in cart |
+| items/name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. |
+| items/price | the price, AS DISPLAYED on item detail page. |
+| items/discount | the amount discounted from price, if applied. |
+| items/product_options | a list of option type and value(s) selected for this item in cart. |
+| shipping | shipping method containing sub fields : |
+| shipping/option | string containing the shipping option, e.g. Fast (3 Days), Standard (5-7 Days), etc. |
+| shipping/cost | the shipping cost. |
+| tax | total tax applied. |
+| total | sum of the item price x quantity for all items. |
+| total\_discount | sum of discounts applied. |
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
