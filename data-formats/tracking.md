@@ -176,10 +176,11 @@ Format of page\_specific\_data and type\_of\_log (Note that other common fields 
             "image_url": $image_url,
             "market": $market,
             "meta": $meta_og_properties,
-            "name": $name,
             "price": $price,
-            "product_options": $product_option_array,
-            "sku": $sku
+            "options": $options,
+            "sku": $sku,
+            "title": $title,
+            "variations": $variations
         }
     }
     "type": "pageview"
@@ -196,10 +197,11 @@ where
 | image_url | a URL of the thumbnail image of this product. |
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
 | meta\_og\_properties | a list of meta-tag contents for og:xxx properties. See below for details. |
-| name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. |
+| options | a list of option type and possible values each option can take for the given product. See below for details. |
 | price | the price, AS DISPLAYED on item detail page. |
-| product\_option\_array | a list of option type and possible values each option can take for the given product. See below for details. |
 | sku | SKU of product. |
+| title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
+| variations | a list of variations of this product. This is different from options in that options is price-agnostic, while each variation is associated with different prices. |
 
 
 __product\_option\_array__ is defined as follows :
@@ -263,7 +265,94 @@ where
 | meta\_og\_key | property name of a meta-og tag, e.g. \<META PROPERTY="og:title" CONTENT="This is title."\> __without__ "og:" prefix. |
 | meta\_og\_value | content of a meta-og tag |
 
+__variations__ is defined as follows :
 
+```json
+[
+    {
+        ""
+    },
+    ...
+]
+```
+
+| Field | Description |
+| -------------: |:------------- |
+| meta\_og\_key | property name of a meta-og tag, e.g. \<META PROPERTY="og:title" CONTENT="This is title."\> __without__ "og:" prefix. |
+| meta\_og\_value | content of a meta-og tag |
+
+
+Example of a ITEM_DETAIL log :
+
+```json
+{
+    "json_text": {
+        "document": {
+            "base_uri": "https://www.harney.com/phoenix-dan-cong.html",
+            "cookie": "ppu=1f8f43905772406cea79332fe7ba1840; uid=349602443; SLIBeacon_368182260=ECZNEOCSE1455834894808TQHIRIIKZ; SLI2_368182260=ECZNEOCSE1455834894808TQHIRIIKZ.1455834894808.1.1; SLI4_368182260=1455834894808; _gat=1; __utmt=1; VIEWED_PRODUCT_IDS=5074%2C5075; _ga=GA1.3.341494139.1455834867; __utma=11410477.341494139.1455834867.1455834868.1455846369.2; __utmb=11410477.2.10.1455846369; __utmc=11410477; __utmz=11410477.1455834868.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); _sbtk=e30%3D",
+            "document_uri": "https://www.harney.com/phoenix-dan-cong.html",
+            "domain": "www.harney.com",
+            "title": "Phoenix Dan Cong",
+            "url": "https://www.harney.com/phoenix-dan-cong.html"
+        },
+        "id": "2f3e8b1797e471de254457b753ff433b",
+        "navigator": {
+            "app code name": "Mozilla",
+            "app name": "Netscape",
+            "app version": "5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36",
+            "cookie enabled": true,
+            "language": "ko",
+            "online": true,
+            "platform": "MacIntel",
+            "product": "Gecko",
+            "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
+        },
+        "page": {
+            "product": {
+                "categories": [
+                    "Tea",
+                    "Phoenix Dan Cong"
+                ],
+                "variations": [
+                    {
+                        "image_url": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/image/370x424/0dc2d03fe217f8c83829496872af24a0/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
+                        "price": "20.00",
+                        "sku": "44615",
+                        "title": "Phoenix Dan Cong - loose 2 oz tin"
+                    },
+                    {
+                        "image_url": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/image/370x424/0dc2d03fe217f8c83829496872af24a0/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
+                        "price": "156.00",
+                        "sku": "41509",
+                        "title": "Phoenix Dan Cong - loose 1 lb bag"
+                    }
+                ],
+                "title": "Phoenix Dan Cong"
+            }
+        },
+        "screen": {
+            "available height": 1413,
+            "available width": 2560,
+            "colod depth": 24,
+            "height": 1440,
+            "pixel depth": 24,
+            "width": 2560
+        },
+        "window": {
+            "closed": false,
+            "default status": "",
+            "inner height": 609,
+            "inner width": 1239,
+            "outer height": 1324,
+            "outer weight": 1239,
+            "screen x": 169,
+            "screen y": 39,
+            "status": ""
+        }
+    },
+    "version": "1.2.0"
+}
+```
 
 ##### Add To Cart Log
 
