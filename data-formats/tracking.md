@@ -220,7 +220,7 @@ __variations__ is defined as follows :
 ```json
 [
     {
-        "catalog_discount": $discount,
+        "catalog_discount": $catalog_discount,
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
