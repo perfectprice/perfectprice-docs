@@ -35,16 +35,13 @@ where :
 | -------------: |:------------- |
 | company_hash | a hash of client company, currently MD5 |
 
-Response for this call is :
+An example response from [log.pfpr.co](log.pfpr.co) :
 
 ```json
 {
     "status": 0,
     "message": "Success",
-    "data": {
-        "ppu": "e87e63b6f59a5ec6e0dc6bf472988d78",
-        "time": "1446411036"
-    }
+    "data": $data
 }
 
 ```
@@ -55,9 +52,22 @@ where
 | -------------: |:------------- |
 | status | an integer valued status code, which is 0 if POST request is successfully processed, or non-zero values if there was any backend error. Details of possible error status codes and what must be done is explained in the following section. |
 | message | a string containing a brief note about what happened. |
-| data | additional meta information : |
-| data/ppu | a unique hash assigned to this user, which is usually added into the cookie for key “ppu”. |
-| data/time | a timestamp that records logging time. |
+| data | additional logging information |
+
+__data__ is defined as follows :
+
+```json
+{
+    "ppu": $ppu,
+    "time": $timestamp
+}
+```
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| ppu | a unique hash string assigned to this user, which is usually added into the cookie for key “ppu”, e.g. "e87e63b6f59a5ec6e0dc6bf472988d78" |
+| timestamp | a timestamp that records logging time, a string value, e.g. "1446411036" |
 
 
 ### Handling Errors
@@ -146,9 +156,12 @@ where
 | page\_specific\_data | data that varies based on the page it is in. More dtail is to follow in the following sections. |
 | type\_of\_log | a string that categorizes the context this log is generated, e.g. "pageview" if generated when page is loaded, or "checkout" if generated during cart checkout. |
 
+
 \* page\_specific\_data and type\_of\_log differ on different pages and events.
 
-For single page apps, page view events include not only the initial page load, but also subsequent pages re-rendering due to clicks. For each of a list of specified such page views in single page apps, event must be sent by The Company according to this format, or Perfect Price, Inc. if our tracking Javascript is used.
+\* Assume that values for fields in the event logs for keys that are not explicitly specified but only given as examples, e.g. "document", "navigator", etc. are trivial from the example values to be prepared using standard Javascript library.
+
+\* For single page apps, page view events include not only the initial page load, but also subsequent pages re-rendering due to clicks. For each of a list of specified such page views in single page apps, event must be sent by The Company according to this format, or Perfect Price, Inc. if our tracking Javascript is used.
 
 
 ### page\_specific\_data Format
@@ -162,10 +175,11 @@ The format of this data depends on the content of pages that it is generated fro
 | CART | "pageview" | a cart view page |
 | OTHER | "pageview" | all other pages |
 
-\*Note that fields contained in these types of data may include but are not limited to what are defined in the formats below.
+\*Fields contained in these types of data may include but are not limited to what are defined in the formats below.
 
-\*Note also that certain fields may be omitted if __not__ available or applicable.
+\*Certain fields may be omitted if __not__ available or applicable based on the specific content of pages data is scraped.
 
+\*Specifics of fields common to various types of logs are separately provided in "2.3 Common Fields."
 
 ##### ITEM_DETAIL Page
 
@@ -178,7 +192,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
         "product": {
             "categories": $categories,
             "currency": $currency,
-            "discount": $discount,
+            "catalog_discount": $catalog_discount,
             "image_url": $image_url,
             "market": $market,
             "price": $price,
@@ -196,86 +210,16 @@ where
 
 | Field | Description |
 | -------------: |:------------- |
-| categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ```["Home", "Groceries", "Vegetables", "Organic"]``` |
-| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
-| discount | the amount discounted from price, if this is also shown to user. | 
-| image_url | a URL of the thumbnail image of this product. |
-| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
-| meta\_og\_properties | a list of meta-tag contents for og:xxx properties. See below for details. |
-| options | a list of option type and possible values each option can take for the given product. See below for details. |
-| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
-| sku | SKU of product. |
-| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
+| options | a list of option type and possible values each option can take for the given product. See "2.3 Common Fields" for details. |
 | variations | a list of variations of this product. This is different from options in that options is price-agnostic, while each variation is associated with different prices. |
 
-
-__options__ is defined as follows :
-
-```json
-[
-    {
-        "type": $option_name,
-        "values": $option_value_array
-    },
-    ...
-]
-```
-
-where
-
-| Field | Description |
-| -------------: |:------------- |
-| option_name | a string that indicates the name of this option, e.g. "size", "weight", etc. |
-| option\_value\_array | an array of values one or more of which this option can take |
-
-An example of options :
-
-```json
-[
-    {
-        "type": "Waist",
-        "values": [
-            "28",
-            "30",
-            "32",
-            "34",
-            "36",
-            "38",
-            "40"
-        ]
-    },
-    {
-        "type": "Length",
-        "values": [
-            "32",
-            "36"
-        ]
-    }
-]
-```
-
-__meta\_og\_properties__ is defined as follows :
-
-```json
-{
-    $meta_og_key: $meta_og_value,
-              :
-}
-```
-
-where
-
-| Field | Description |
-| -------------: |:------------- |
-| meta\_og\_key | property name of a meta-og tag, e.g. \<META PROPERTY="og:title" CONTENT="This is title."\> __without__ "og:" prefix. |
-| meta\_og\_value | content of a meta-og tag |
 
 __variations__ is defined as follows :
 
 ```json
 [
     {
-        "discount": $discount,
+        "catalog_discount": $discount,
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
@@ -284,14 +228,11 @@ __variations__ is defined as follows :
     ...
 ]
 ```
+where
 
 | Field | Description |
 | -------------: |:------------- |
-| discount | catalog discount for this variation. |
-| image_url | a URL of the thumbnail image of this product. |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
-| sku | SKU of product. |
-| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
 
 
 Example of a ITEM_DETAIL log :
@@ -389,21 +330,12 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
 }
 ```
 
-where
-
-| Field | Description |
-| -------------: |:------------- |
-| categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ```["Home", "Groceries", "Vegetables", "Organic"]``` |
-| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
-| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
-| products | a list of products in the catalog page, similar to *variations* in ITEM_DETAIL view. |
-
 __products__ is defined as follows : 
 
 ```json
 [
     {
-        "catalog_discount": $discount,
+        "catalog_discount": $catalog_discount,
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
@@ -412,15 +344,11 @@ __products__ is defined as follows :
     ...
 ]
 ```
+where
 
 | Field | Description |
 | -------------: |:------------- |
-| catalog_discount | discount publicly displayed and applied automatically |
-| image_url | a URL of the thumbnail image of this product. |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
-| sku | SKU of product. |
-| title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
-
 
 
 ##### CART Page
@@ -443,16 +371,6 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
 }
 ```
 
-where
-
-| Field | Description |
-| -------------: |:------------- |
-| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
-| items | a list of items contained in the cart, which contains sub fields : |
-| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
-| total | total amount for products with catalog or cart discounts applied.  |
-| total\_discount | sum of catalog and cart discounts applied. |
-
 __items__ is defined as follows :
 
 ```json
@@ -470,17 +388,12 @@ __items__ is defined as follows :
     ...
 ]
 ```
+where
 
 | Field | Description |
 | -------------: |:------------- |
 | added | an optional Boolean value which must be set to true if this item is added in this event, default = false. |
-| cart_discount | the amount of discount further applied that is not publicly displayed, but applied using means such as coupon codes. |
-| catalog_discount | discount publicly displayed and applied automatically |
-| options | a list of option type and possible values each option can take for the given product. |
 | price | price, __after__ any type of discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
-| quantity | an integer value that contains the count of this item in cart |
-| sku | SKU of product. |
-| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
 
 ##### OTHER Page
 
@@ -491,24 +404,6 @@ There is no specific fields needed for this category of page logs. In this case,
     "meta": $meta_og_properties
 }
 ```
-
-__meta\_og\_properties__ is defined as follows :
-
-```json
-{
-    $meta_og_key: $meta_og_value,
-              :
-}
-```
-
-where
-
-| Field | Description |
-| -------------: |:------------- |
-| meta\_og\_key | property name of a meta-og tag, e.g. \<META PROPERTY="og:title" CONTENT="This is title."\> __without__ "og:" prefix. |
-| meta\_og\_value | content of a meta-og tag |
-
-
 
 ### 2.2 Logs from Checkout Events
 When an item is *actually* purchased, this log must be sent. This therefore is  a log that gets sent not on a "page load" event, but a successful completion of "purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making payments.
@@ -573,13 +468,9 @@ where
 
 | Field | Description |
 | -------------: |:------------- |
-| items | a list of items contained in the cart, which contains sub fields : |
+| items | a list of items purchased. |
 | shipping | shipping method. See below for more details. |
 | tax | total tax applied. |
-| total | total amount for products with catalog or cart discounts applied. |
-| total\_discount | sum of all discounts applied. |
-| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
-| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
 
 __items__ is defined as follows :
 
@@ -597,16 +488,13 @@ __items__ is defined as follows :
     ...
 ]
 ```
+where
         
 | Field | Description |
 | -------------: |:------------- |
-| cart_discount | the amount of discount further applied that is not publicly displayed, but applied using means such as coupon codes. |
-| catalog_discount | discount publicly displayed and applied automatically |
-| options | a list of option type and value(s) selected for this item. |
-| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| price | price, __after__ any type of discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 | quantity | an integer value that contains the purchase count of this item |
-| sku | SKU of product. |
-| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
+
 
 __shipping__ is defined as follows :
 
@@ -616,8 +504,88 @@ __shipping__ is defined as follows :
     "cost": $cost
 },     
 ```
+where
 
 | Field | Description |
 | -------------: |:------------- |
 | option | string containing the shipping option, e.g. Fast (3 Days), Standard (5-7 Days), etc. |
 | cost | the shipping cost. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+
+
+### 2.3 Common Fields
+
+
+| Field | Description |
+| -------------: |:------------- |
+| categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ```["Home", "Groceries", "Vegetables", "Organic"]``` |
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
+| catalog_discount | discount publicly displayed and applied automatically |
+| image_url | a URL of the thumbnail image of this product. |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
+| meta\_og\_properties | a list of meta-tag contents for og:xxx properties. See below for details. |
+| options | a list of option type and possible values each option can take for the given product. See below for details. |
+| sku | SKU of product. |
+| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
+| total | total amount for products with catalog or cart discounts applied.  |
+| total\_discount | sum of catalog and cart discounts applied. |
+
+__meta\_og\_properties__ is defined as follows :
+
+```json
+{
+    $meta_og_key: $meta_og_value,
+              :
+}
+```
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| meta\_og\_key | property name of a meta-og tag, e.g. \<META PROPERTY="og:title" CONTENT="This is title."\> __without__ "og:" prefix. |
+| meta\_og\_value | content of a meta-og tag |
+
+
+__options__ is defined as follows :
+
+```json
+[
+    {
+        "type": $option_name,
+        "values": $option_value_array
+    },
+    ...
+]
+```
+
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| option_name | a string that indicates the name of this option, e.g. "size", "weight", etc. |
+| option\_value\_array | an array of values one or more of which this option can take |
+
+An example of options :
+
+```json
+[
+    {
+        "type": "Waist",
+        "values": [
+            "28",
+            "30",
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+        ]
+    },
+    {
+        "type": "Length",
+        "values": [
+            "32",
+            "36"
+        ]
+    }
+]
+```
