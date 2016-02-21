@@ -211,6 +211,7 @@ where
 | Field | Description |
 | -------------: |:------------- |
 | options | a list of option type and possible values each option can take for the given product. See "2.3 Common Fields" for details. |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 | variations | a list of variations of this product. This is different from options in that options is price-agnostic, while each variation is associated with different prices. |
 
 
@@ -412,26 +413,7 @@ In this example, page\_specific\_data is in red below :
 
 ```json
 {
-    "document": {
-        "base_uri": "https://www.betabrand.com/",
-        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",
-        "document_uri": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",
-        "domain": "www.betabrand.com",
-        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",
-        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"
-    },
     "id": $company_hash,
-    "navigator": {
-        "app_code_name": "Mozilla",
-        "app_name": "Netscape",
-        "app_version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",
-        "cookie_enabled": true,
-        "language": "en-US",
-        "online": true,
-        "platform": "MacIntel",
-        "product": "Gecko",
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
-    },
     "checkout": {
         "items": $items,
         "shipping": $shipping,
@@ -440,26 +422,6 @@ In this example, page\_specific\_data is in red below :
         "total_discount": $total_discount,
         "currency": $currency,
         "market": $market
-    },
-    "screen": {
-        "available_height": 832,
-        "available_width": 1440,
-        "color_depth": 24,
-        "height": 900,
-        "pixel_depth": 24,
-        "width": 1440
-    },
-    "type": "checkout",
-    "window": {
-        "closed": false,
-        "default status": "",
-        "inner_height": 206,
-        "inner_width": 1270,
-        "outer_height": 832,
-        "outer_weight": 1270,
-        "screen_x": 22,
-        "screen_y": 23,
-        "status": ""
     }
 }
 ```
