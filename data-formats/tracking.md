@@ -161,10 +161,14 @@ The format of this data depends on the content of pages that it is generated fro
 | CART | "pageview" | a cart view page |
 | OTHER | "pageview" | all other pages |
 
+\*Note that fields contained in these types of data may include but are not limited to what are defined in the formats below.
+
+\*Note also that certain fields may be omitted if __not__ available or applicable.
+
 
 ##### ITEM_DETAIL Page
 
-Format of page\_specific\_data and type\_of\_log (Note that other common fields are not shown here for simplicity but must be present in real logs) :
+Format of page\_specific\_data and type\_of\_log. \*Note that other common fields are not shown here for simplicity but must be present in real logs.
 
 ```json
 {
@@ -198,13 +202,13 @@ where
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
 | meta\_og\_properties | a list of meta-tag contents for og:xxx properties. See below for details. |
 | options | a list of option type and possible values each option can take for the given product. See below for details. |
-| price | the price, AS DISPLAYED on item detail page. |
+| price | the price, AS DISPLAYED on item detail page. __No currency symbol, provided as string type with digit separators, e.g. ',' or '.', etc.__ |
 | sku | SKU of product. |
 | title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
 | variations | a list of variations of this product. This is different from options in that options is price-agnostic, while each variation is associated with different prices. |
 
 
-__product\_option\_array__ is defined as follows :
+__options__ is defined as follows :
 
 ```json
 [
@@ -223,7 +227,7 @@ where
 | option_name | a string that indicates the name of this option, e.g. "size", "weight", etc. |
 | option\_value\_array | an array of values one or more of which this option can take |
 
-An example of product\_option\_array :
+An example of options :
 
 ```json
 [
@@ -270,7 +274,11 @@ __variations__ is defined as follows :
 ```json
 [
     {
-        ""
+        "discount": $discount,
+        "image_url": $image_url,
+        "price": $price,
+        "sku": $sku,
+        "title": $title
     },
     ...
 ]
@@ -278,8 +286,11 @@ __variations__ is defined as follows :
 
 | Field | Description |
 | -------------: |:------------- |
-| meta\_og\_key | property name of a meta-og tag, e.g. \<META PROPERTY="og:title" CONTENT="This is title."\> __without__ "og:" prefix. |
-| meta\_og\_value | content of a meta-og tag |
+| discount | catalog discount for this variation. |
+| image_url | a URL of the thumbnail image of this product. |
+| price | the price, AS DISPLAYED on item detail page. |
+| sku | SKU of product. |
+| title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
 
 
 Example of a ITEM_DETAIL log :
@@ -297,15 +308,15 @@ Example of a ITEM_DETAIL log :
         },
         "id": "2f3e8b1797e471de254457b753ff433b",
         "navigator": {
-            "app code name": "Mozilla",
-            "app name": "Netscape",
-            "app version": "5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36",
-            "cookie enabled": true,
+            "app_code_name": "Mozilla",
+            "app_name": "Netscape",
+            "app_version": "5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36",
+            "cookie_enabled": true,
             "language": "ko",
             "online": true,
             "platform": "MacIntel",
             "product": "Gecko",
-            "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
         },
         "page": {
             "product": {
@@ -331,22 +342,22 @@ Example of a ITEM_DETAIL log :
             }
         },
         "screen": {
-            "available height": 1413,
-            "available width": 2560,
-            "colod depth": 24,
+            "available_height": 1413,
+            "available_width": 2560,
+            "colod_depth": 24,
             "height": 1440,
-            "pixel depth": 24,
+            "pixel_depth": 24,
             "width": 2560
         },
         "window": {
             "closed": false,
-            "default status": "",
-            "inner height": 609,
-            "inner width": 1239,
-            "outer height": 1324,
-            "outer weight": 1239,
-            "screen x": 169,
-            "screen y": 39,
+            "default_status": "",
+            "inner_height": 609,
+            "inner_width": 1239,
+            "outer_height": 1324,
+            "outer_weight": 1239,
+            "screen_x": 169,
+            "screen_y": 39,
             "status": ""
         }
     },
@@ -354,7 +365,56 @@ Example of a ITEM_DETAIL log :
 }
 ```
 
-##### Add To Cart Log
+##### CATALOG Page
+
+Format of page\_specific\_data and type\_of\_log. \*Note that other common fields are not shown here for simplicity but must be present in real logs.
+
+```json
+{
+    "page": {
+        "categories": $categories,
+        "currency": $currency,
+        "market": $market,
+        "products": $products
+    }
+    "type": "pageview"
+}
+```
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ```["Home", "Groceries", "Vegetables", "Organic"]``` |
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
+| products | a list of products in the catalog page, similar to *variations* in ITEM_DETAIL view. |
+
+__products__ is defined as follows : 
+
+```json
+[
+    {
+        "discount": $discount,
+        "image_url": $image_url,
+        "price": $price,
+        "sku": $sku,
+        "title": $title
+    },
+    ...
+]
+```
+
+| Field | Description |
+| -------------: |:------------- |
+| discount | catalog discount for this product. |
+| image_url | a URL of the thumbnail image of this product. |
+| price | the price, AS DISPLAYED on item detail page. |
+| sku | SKU of product. |
+| title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
+
+
+
+##### CART Page
 
 When an item is added to cart, this must be sent. Example:
 
