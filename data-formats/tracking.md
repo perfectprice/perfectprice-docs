@@ -87,7 +87,8 @@ Default naming scheme for fields in any JSON data we generate is __lower\_case\_
 # 2. Log Data
 This section covers specifics of __stringified\_json\_data__ explained in previous section.
 
-### 2.1 Common Format
+### 2.1 Logs from Page Load Events
+
 Any log sent at __page load event__ must be of this format :
 
 ```json
@@ -150,7 +151,7 @@ where
 For single page apps, page view events include not only the initial page load, but also subsequent pages re-rendering due to clicks. For each of a list of specified such page views in single page apps, event must be sent by The Company according to this format, or Perfect Price, Inc. if our tracking Javascript is used.
 
 
-### 2.2 page\_specific\_data Format
+### page\_specific\_data Format
 
 The format of this data depends on the content of pages that it is generated from. For our purpose, most e-commerce or retail pages fall into one of the following list of categories :
 
@@ -173,13 +174,13 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
 ```json
 {
     "page": {
+        "meta": $meta_og_properties,
         "product": {
             "categories": $categories,
             "currency": $currency,
             "discount": $discount,
             "image_url": $image_url,
             "market": $market,
-            "meta": $meta_og_properties,
             "price": $price,
             "options": $options,
             "sku": $sku,
@@ -202,9 +203,9 @@ where
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
 | meta\_og\_properties | a list of meta-tag contents for og:xxx properties. See below for details. |
 | options | a list of option type and possible values each option can take for the given product. See below for details. |
-| price | the price, AS DISPLAYED on item detail page. __No currency symbol, provided as string type with digit separators, e.g. ',' or '.', etc.__ |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 | sku | SKU of product. |
-| title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
+| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
 | variations | a list of variations of this product. This is different from options in that options is price-agnostic, while each variation is associated with different prices. |
 
 
@@ -288,9 +289,9 @@ __variations__ is defined as follows :
 | -------------: |:------------- |
 | discount | catalog discount for this variation. |
 | image_url | a URL of the thumbnail image of this product. |
-| price | the price, AS DISPLAYED on item detail page. |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 | sku | SKU of product. |
-| title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
+| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
 
 
 Example of a ITEM_DETAIL log :
@@ -319,6 +320,13 @@ Example of a ITEM_DETAIL log :
             "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
         },
         "page": {
+            "meta": {
+                "description": "A nice twisted oolong that has subtle roasted peach flavors.",
+                "image": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/small_image/200x200/9df78eab33525d08d6e5fb8d27136e95/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
+                "title": "Phoenix Dan Cong | Harney & Sons Fine Teas",
+                "type": "product",
+                "url": "https://www.harney.com/phoenix-dan-cong.html"
+            },
             "product": {
                 "categories": [
                     "Tea",
@@ -380,6 +388,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
     "type": "pageview"
 }
 ```
+
 where
 
 | Field | Description |
@@ -394,7 +403,7 @@ __products__ is defined as follows :
 ```json
 [
     {
-        "discount": $discount,
+        "catalog_discount": $discount,
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
@@ -406,9 +415,9 @@ __products__ is defined as follows :
 
 | Field | Description |
 | -------------: |:------------- |
-| discount | catalog discount for this product. |
+| catalog_discount | discount publicly displayed and applied automatically |
 | image_url | a URL of the thumbnail image of this product. |
-| price | the price, AS DISPLAYED on item detail page. |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 | sku | SKU of product. |
 | title | the title of the product, which MUST BE the same as what’s shown in item detail view logs. |
 
@@ -416,95 +425,21 @@ __products__ is defined as follows :
 
 ##### CART Page
 
-When an item is added to cart, this must be sent. Example:
+When a use visits a cart view page, which shows a list of items in the shopping cart, a cart log must be sent. \*Note that a cart page view is different from an __add to cart__ event log, which is sent when a use takes an action to add item to a cart. 
 
-A user clicks “Add To Cart” button.
+Format of page\_specific\_data and type\_of\_log. \*Note that other common fields are not shown here for simplicity but must be present in real logs.
 
-
-
-Note that a user chose options : Waist : 36, Length: 36.
-
-
-
-A pop up opens up to show what’s added and what are in current cart.
-
-
-
-
-In this example, page\_specific\_data is in red below :
 
 ```json
 {
-    "document": {
-        "base URI": "https://www.betabrand.com/",
-        "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",
-        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",
-        "domain": "www.betabrand.com",
-        "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",
-        "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"
-    },
-    "id": "97da7ff7f0e157b0874d839cfd79876e",
-    "navigator": {
-        "app_code_name": "Mozilla",
-        "app_name": "Netscape",
-        "app_version": "5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36",
-        "cookie_enabled": true,
-        "language": "en-US",
-        "online": true,
-        "platform": "MacIntel",
-        "product": "Gecko",
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
-    },
     "cart": {
-        "items": [
-            {
-                "quantity": 1,
-                "name": "Nesting-Doll Cordarounds",
-                "price": "100.00",
-                "discount": "10.00",
-                "product_options": [
-                    "Waist": "36",
-                    "Length": "36"
-                ],
-                "added": true
-            },
-            {
-                "quantity": 1,
-                "name": "Some shirt",
-                "price": "70.00",
-                "discount": "8.00",
-                "product_options": [
-                    "Color": "Blue",
-                    "Size": "M"
-                ]
-            }
-        ],
-        "tax": "15",
-        "total": "170",
-        "total discount": "18",
-        "currency": "USD",
-        "market": "en-US"
+        "currency": $currency,
+        "items": $items,
+        "market": $market,
+        "total": $total,
+        "total_discount": $total_discount
     },
-    "screen": {
-        "available_height": 832,
-        "available_width": 1440,
-        "color_depth": 24,
-        "height": 900,
-        "pixel_depth": 24,
-        "width": 1440
-    },
-    "type": "add_to_cart",
-    "window": {
-        "closed": false,
-        "default status": "",
-        "inner_height": 206,
-        "inner_width": 1270,
-        "outer_height": 832,
-        "outer_weight": 1270,
-        "screen_x": 22,
-        "screen_y": 23,
-        "status": ""
-    }
+    "type": "add_to_cart"
 }
 ```
 
@@ -512,49 +447,85 @@ where
 
 | Field | Description |
 | -------------: |:------------- |
-| items | a list of items contained in the cart, which contains sub fields : |
-| items/quantity | an integer value that contains the count of this item in cart |
-| items/name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. |
-| items/price | the price, AS DISPLAYED on item detail page. |
-| items/discount | the amount discounted from price, if applied.  |
-| product_options | a list of option type and value(s) selected for this item in cart. |
-| added | an optional Boolean value which must be set to true if this item is added in this event, default = false. |
-| tax | total tax applied. |
-| total | sum of the item price x quantity for all items. |
-| total\_discount | sum of discounts applied. |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
+| items | a list of items contained in the cart, which contains sub fields : |
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
+| total | total amount for products with catalog or cart discounts applied.  |
+| total\_discount | sum of catalog and cart discounts applied. |
+
+__items__ is defined as follows :
+
+```json
+[
+    {
+        "added": true
+        "cart_discount": $cart_discount,
+        "catalog_discount": $catalog_discount,
+        "options": $options,
+        "price": $price,
+        "quantity": $quantity,
+        "sku": $sku,
+        "title": $title
+    },
+    ...
+]
+```
+
+| Field | Description |
+| -------------: |:------------- |
+| added | an optional Boolean value which must be set to true if this item is added in this event, default = false. |
+| cart_discount | the amount of discount further applied that is not publicly displayed, but applied using means such as coupon codes. |
+| catalog_discount | discount publicly displayed and applied automatically |
+| options | a list of option type and possible values each option can take for the given product. |
+| price | price, __after__ any type of discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| quantity | an integer value that contains the count of this item in cart |
+| sku | SKU of product. |
+| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
+
+##### OTHER Page
+
+There is no specific fields needed for this category of page logs. In this case, page\_specific\_data could have a general information like meta. For instance,
+
+```json
+{
+    "meta": $meta_og_properties
+}
+```
+
+__meta\_og\_properties__ is defined as follows :
+
+```json
+{
+    $meta_og_key: $meta_og_value,
+              :
+}
+```
+
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| meta\_og\_key | property name of a meta-og tag, e.g. \<META PROPERTY="og:title" CONTENT="This is title."\> __without__ "og:" prefix. |
+| meta\_og\_value | content of a meta-og tag |
+
+
 
-2.2.3. Purchase (Checkout) Log
-When an item is purchased, this must be sent. Example:
-
-A user clicks “Checkout” button, e.g. in the pop up
-
-
-
-or in the cart slide section :
-
-
-
-
-Then in the checkout page user clicks “Place Order” in order page.
-
-
-
+### 2.2 Logs from Checkout Events
+When an item is *actually* purchased, this log must be sent. This therefore is  a log that gets sent not on a "page load" event, but a successful completion of "purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making payments.
 
 In this example, page\_specific\_data is in red below :
 
 ```json
 {
     "document": {
-        "base URI": "https://www.betabrand.com/",
+        "base_uri": "https://www.betabrand.com/",
         "cookie": "optimizelyEndUserId=oeu1446252480923r0.7751143390778452;... ",
-        "document URI": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",
+        "document_uri": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html",
         "domain": "www.betabrand.com",
         "title": "Nesting-Doll Cordarounds | Men's Navy Horizontal Corduroy Pants | Betabrand",
         "url": "https://www.betabrand.com/mens/pants/mens-navy-cordarounds-corduroy-pants.html"
     },
-    "id": "97da7ff7f0e157b0874d839cfd79876e",
+    "id": $company_hash,
     "navigator": {
         "app_code_name": "Mozilla",
         "app_name": "Netscape",
@@ -567,37 +538,13 @@ In this example, page\_specific\_data is in red below :
         "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
     },
     "checkout": {
-        "items": [
-            {
-                "quantity": 1,
-                "name": "Nesting-Doll Corarounds",
-                "price": "100.00",
-                "discount": "10.00",
-                "product_options": [
-                    "Waist": "36",
-                    "Length": "36"
-                ]
-            },
-            {
-                "quantity": 1,
-                "name": "Some shirt",
-                "price": "70.00",
-                "discount": "8.00",
-                "product_options": [
-                    "Color": "Blue",
-                    "Size": "M"
-                ]
-            }
-        ],
-        "shipping": {
-            "option": "Fast (3 Days)",
-            "cost": "16.95"
-        },
-        "tax": "15",
-        "total": "170",
-        "total_discount": "18",
-        "currency": "USD",
-        "market": "en-US"
+        "items": $items,
+        "shipping": $shipping,
+        "tax": $tax,
+        "total": $total,
+        "total_discount": $total_discount,
+        "currency": $currency,
+        "market": $market
     },
     "screen": {
         "available_height": 832,
@@ -627,16 +574,50 @@ where
 | Field | Description |
 | -------------: |:------------- |
 | items | a list of items contained in the cart, which contains sub fields : |
-| items/quantity | an integer value that contains the count of this item in cart |
-| items/name | the name of the product, which MUST BE the same as what’s shown in item detail view logs. |
-| items/price | the price, AS DISPLAYED on item detail page. |
-| items/discount | the amount discounted from price, if applied. |
-| items/product_options | a list of option type and value(s) selected for this item in cart. |
-| shipping | shipping method containing sub fields : |
-| shipping/option | string containing the shipping option, e.g. Fast (3 Days), Standard (5-7 Days), etc. |
-| shipping/cost | the shipping cost. |
+| shipping | shipping method. See below for more details. |
 | tax | total tax applied. |
-| total | sum of the item price x quantity for all items. |
-| total\_discount | sum of discounts applied. |
+| total | total amount for products with catalog or cart discounts applied. |
+| total\_discount | sum of all discounts applied. |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
+
+__items__ is defined as follows :
+
+```json
+[
+    {
+        "quantity": $quantity,
+        "title": $title,
+        "price": $price,
+        "sku" : $sku,
+        "cart_discount": $cart_discount,
+        "catalog_discount": $catalog_discount,
+        "product_options": $product_options
+    },
+    ...
+]
+```
+        
+| Field | Description |
+| -------------: |:------------- |
+| cart_discount | the amount of discount further applied that is not publicly displayed, but applied using means such as coupon codes. |
+| catalog_discount | discount publicly displayed and applied automatically |
+| options | a list of option type and value(s) selected for this item. |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| quantity | an integer value that contains the purchase count of this item |
+| sku | SKU of product. |
+| title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
+
+__shipping__ is defined as follows :
+
+```json
+{
+    "option": $option,
+    "cost": $cost
+},     
+```
+
+| Field | Description |
+| -------------: |:------------- |
+| option | string containing the shipping option, e.g. Fast (3 Days), Standard (5-7 Days), etc. |
+| cost | the shipping cost. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
