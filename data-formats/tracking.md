@@ -201,7 +201,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
             "title": $title,
             "variations": $variations
         }
-    }
+    },
     "type": "pageview"
 }
 ```
