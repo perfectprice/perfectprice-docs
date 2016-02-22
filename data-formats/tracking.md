@@ -481,6 +481,7 @@ where
 | -------------: |:------------- |
 | categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ```["Home", "Groceries", "Vegetables", "Organic"]``` |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
+| cart_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes. |
 | catalog_discount | discount publicly displayed and applied automatically |
 | image_url | a URL of the thumbnail image of this product. |
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. |
