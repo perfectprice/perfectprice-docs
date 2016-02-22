@@ -439,13 +439,13 @@ __items__ is defined as follows :
 ```json
 [
     {
-        "quantity": $quantity,
-        "title": $title,
-        "price": $price,
-        "sku" : $sku,
         "cart_discount": $cart_discount,
         "catalog_discount": $catalog_discount,
-        "product_options": $product_options
+        "options": $options,
+        "price": $price,
+        "quantity": $quantity,
+        "sku" : $sku,
+        "title": $title
     },
     ...
 ]
