@@ -190,6 +190,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
     "page": {
         "meta": $meta_og_properties,
         "product": {
+            "availability": $availability,
             "categories": $categories,
             "currency": $currency,
             "catalog_discount": $catalog_discount,
@@ -479,6 +480,7 @@ where
 
 | Field | Description |
 | -------------: |:------------- |
+| availability | optional field that is true or false depending if the item is in stock or false if the item is out of stock. |
 | categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ```["Home", "Groceries", "Vegetables", "Organic"]``` |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. |
 | cart_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes. |
