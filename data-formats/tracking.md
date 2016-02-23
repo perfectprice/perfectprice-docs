@@ -135,7 +135,7 @@ Any log sent at __page load event__ must be of this format :
     "type": $type_of_log,
     "window": {
         "closed": false,
-        "default status": "",
+        "default_status": "",
         "inner_height": 286,
         "inner_width": 1270,
         "outer_height": 832,
