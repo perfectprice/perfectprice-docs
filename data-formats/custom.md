@@ -75,10 +75,6 @@ datetime,title,sku,amount
 ]
 ```
 
-### Providing Data
-
-Please email us the CSV or JSON file, until an alternative method is specified here.
-
 
 # 2. Unique ID
 
@@ -97,6 +93,8 @@ Unique ID here refers to standard codes assigned to each *product* such as :
 | type | Name of unique ID standard. This is useful to list different types of unique IDs if more than one are assigned to a *product*. Default value is “UPC”. | No | UPC or GTIN, etc. |
 
 which could be provided either in CSV or in JSON as follows :
+
+##### CSV
 
 [ Example 1 ]
 
@@ -151,3 +149,6 @@ Jasmine Tea Pearl Dragon,JASPERL-2202,00110234223,GTIN
 ]
 ```
 
+# 3. Providing Data
+
+Please email us the CSV or JSON file, until an alternative method is specified here.
