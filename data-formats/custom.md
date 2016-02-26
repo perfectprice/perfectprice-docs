@@ -159,10 +159,10 @@ Jasmine Tea Pearl Dragon,JASPERL-2202,00110234223,GTIN
 Historical data for our analysis consists of :
 
     1) aggregations of core metrics,
-    2) at varying combinations of ,
+    2) at varying combinations of attributes,
     3) for each *product*.
 
-##### 1) Metrics Aggregated
+##### 1) Metrics
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|:-------------|
@@ -174,7 +174,7 @@ Historical data for our analysis consists of :
 
 \* W.o.l.g. above metrics is aggregated by 2) and 3).
 
-##### 2) Attributes of Aggregation
+##### 2) Attributes
 
 | Field | Description | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|
