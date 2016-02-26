@@ -166,11 +166,15 @@ Historical data for our analysis consists of :
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|:-------------|
-| __view_count__ | Number of times a product is viewed, e.g. web page view, app page load, etc. | Yes | 
-| __purchase\_count__ | Number of times a product is purchased. | Yes | 
-| __purchase\_quantity__ | Quantity a product is purchased. | Yes | 
-| __add\_to\_cart\_count__ | Number of times a product is added to cart. | Yes | 
-| __add\_to\_cart\_quantity__ | Quantity a product is added to cart. | Yes | 
+| __view_count__ | number of times a product is viewed, e.g. web page view, app page load, etc. | Yes | 
+| __purchase\_count__ | number of times a product is purchased. | Yes | 
+| __purchase\_quantity__ | quantity a product is purchased. | Yes | 
+| __add\_to\_cart\_count__ | number of times a product is added to cart. | Yes | 
+| __add\_to\_cart\_quantity__ | quantity a product is added to cart. | Yes |
+| average\_cart\_quantity | average quantity of items per checkout, this is avereage of sum of quantities for all items in checkouts. | No |
+| average\_cart\_value | average amount spent per checkout. | No |
+
+
 
 \* W.o.l.g. above metrics is aggregated by 2) and 3).
 
@@ -180,16 +184,21 @@ Historical data for our analysis consists of :
 |-------------:|:-------------|:-------------|:-------------|
 | __title__ | title of the product. | Yes | Phoenix Dan Cong |
 | __sku__ | SKU of product. | Yes | K-MCRW40 |
-| __datetime__ | Date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
-| __duration__ | An integer that indicates the number of seconds in the aggregation period. | Yes | 86400 |
-| __price__ | Price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. | Yes | 321.20 or 1,234.56 |
+| __datetime__ | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
+| __duration__ | an integer that indicates the number of seconds in the aggregation period. | Yes | 86400 |
+| __price__ | price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. | Yes | 321.20 or 1,234.56 |
 | catalog_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes., a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. | No | 5.99 |
-| cart_discount | discount publicly displayed and applied automatically | No | 1.99 |
+| cart_discount | discount publicly displayed and applied automatically. | No | 1.99 |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No | USD |
 | option_type | type of option | No | Size |
 | option_value | value of option | No | XL |
 
-If more one combination of option_type and option_value exist for a product, then aggregation metrics could be broken down into each combination. However, in most such cases, those options could have been displayed in the same page, i.e. the view_count applies to all those options equally. For such cases, repeat view_count over multiple lines for each combintation.
+\* If more one combination of option\_type and option\_value exist for a product, then aggregation metrics could be broken down into each combination. However, in most such cases, those options could have been displayed in the same page, i.e. the view\_count applies to all those options equally. For such cases, repeat view\_count over multiple lines for each combintation.
+
+\* Similar to the case with view\_counts being shared for varying option\_value, view\_count cannot be aggregated for attribute cart\_discount, because cart\_discount only shows up in purchase events. Hence, the view\_count applies to all those options equally. For such cases, repeat view\_count over multiple lines for each combintation.
+
+\* For promotional analysis using coupons, cart (coupon) discounts must be provided, if applied. Omitting this value is interpreted as having no promotions.
+
 
 ##### 3) Product Info
 
