@@ -152,6 +152,40 @@ Jasmine Tea Pearl Dragon,JASPERL-2202,00110234223,GTIN
 ]
 ```
 
-# 3. Providing Data
+# 3. Historical Data
+
+### Introduction
+
+Historical data for our analysis consists of :
+
+    1) aggregations of core metrics,
+    2) at varying combinations of time and price,
+    3) for each *product*.
+
+##### Metrics Aggregated
+
+| Metric | Description |
+|-------------:|:-------------|
+| view_count | Number of times a product is viewed, e.g. web page view, app page load, etc. |
+| purchase\_count | Number of times a product is purchased. |
+| purchase\_quantity | Quantity a product is purchased. |
+| add\_to\_cart\_count | Number of times a product is added to cart. |
+| add\_to\_cart\_quantity | Quantity a product is added to cart. |
+
+\* W.o.l.g. above metrics is aggregated by 2) and 3).
+
+##### Sliced By
+
+| Metric | Description |
+|-------------:|:-------------|
+| datetime | Date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. |
+| duration | An integer that indicates the number of seconds in the aggregation period. |
+| price | Price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. |
+| catalog_discount | Price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. |
+| cart_discount | |
+
+
+
+# 4. Providing Data
 
 Please email us the CSV or JSON file, until an alternative method is specified here.
