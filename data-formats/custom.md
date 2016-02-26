@@ -187,8 +187,8 @@ Historical data for our analysis consists of :
 | __datetime__ | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
 | __duration__ | an integer that indicates the number of seconds in the aggregation period. | Yes | 86400 |
 | __price__ | price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. | Yes | 321.20 or 1,234.56 |
-| catalog_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes., a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. | No | 5.99 |
-| cart_discount | discount publicly displayed and applied automatically. | No | 1.99 |
+| catalog_discount | discount publicly displayed and applied automatically. | No | 1.99 |
+| cart_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes., a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. | No | 5.99 |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No | USD |
 | option_type | type of option | No | Size |
 | option_value | value of option | No | XL |
@@ -197,7 +197,7 @@ Historical data for our analysis consists of :
 
 \* Similar to the case with view\_counts being shared for varying option\_value, view\_count cannot be aggregated for attribute cart\_discount, because cart\_discount only shows up in purchase events. Hence, the view\_count applies to all those options equally. For such cases, repeat view\_count over multiple lines for each combintation.
 
-\* For promotional analysis using coupons, cart (coupon) discounts must be provided, if applied. Omitting this value is interpreted as having no promotions.
+\* For promotional analysis using coupons, catalog and/or cart (coupon) discounts must be provided, if applied. Omitting thse values are interpreted as having no promotions.
 
 
 ##### 3) Product Info
