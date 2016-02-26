@@ -234,7 +234,7 @@ Phoenix Dan Cong,K-MCRW40,Home|Groceries|Vegetables|Organic,https://101vape.com/
 ```json
 [
     {
-        "title":, "Phoenix Dan Cong",
+        "title": "Phoenix Dan Cong",
         "sku": "K-MCRW40",
         "datetime": "2016-01-23T22:49:05+00:00",
         "duration" 86400",
@@ -249,7 +249,7 @@ Phoenix Dan Cong,K-MCRW40,Home|Groceries|Vegetables|Organic,https://101vape.com/
         "add_to_cart_quantity": 2000
     },
     {
-        "title":, "Phoenix Dan Cong",
+        "title": "Phoenix Dan Cong",
         "sku": "K-MCRW40",
         "datetime": "2016-01-23T22:49:05+00:00",
         "duration" 86400",
@@ -262,7 +262,7 @@ Phoenix Dan Cong,K-MCRW40,Home|Groceries|Vegetables|Organic,https://101vape.com/
         "add_to_cart_quantity": 200
     },
     {
-        "title":, "Barilla Pasta Sause",
+        "title": "Barilla Pasta Sause",
         "sku": "BPS-1123",
         "datetime": "2016-01-23",
         "duration" 86400",
@@ -277,7 +277,7 @@ Phoenix Dan Cong,K-MCRW40,Home|Groceries|Vegetables|Organic,https://101vape.com/
         "add_to_cart_count": 35
     },
     {
-        "title":, "Barilla Pasta Sause",
+        "title": "Barilla Pasta Sause",
         "sku": "BPS-1123",
         "datetime": "2016-01-23",
         "duration" 86400",
