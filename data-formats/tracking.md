@@ -190,6 +190,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
     "page": {
         "meta": $meta_og_properties,
         "product": {
+            "availability": $availability,
             "categories": $categories,
             "currency": $currency,
             "catalog_discount": $catalog_discount,
@@ -198,6 +199,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
             "price": $price,
             "options": $options,
             "sku": $sku,
+            "stock_count": $stock_count,
             "title": $title,
             "variations": $variations
         }
@@ -210,8 +212,10 @@ where
 
 | Field | Description |
 | -------------: |:------------- |
+| availability | a boolean value, True if product is displayed as available, False otherwise |
 | options | a list of option type and possible values each option can take for the given product. See "2.3 Common Fields" for details. |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| stock_count | inventory count |
 | variations | a list of variations of this product. This is different from options in that options is price-agnostic, while each variation is associated with different prices. |
 
 
