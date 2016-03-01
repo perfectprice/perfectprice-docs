@@ -19,5 +19,8 @@ Notes on special fields:
 | __Shipping__ | Not necessary but can be included if desired |
 | __Tax__ | Not necessary but can be included if desired |
 
+### Cost
+
+Cost data may be included this feed, following the spec for Cost outlined elsewhere in Perfect Price documentation. 
 
 
