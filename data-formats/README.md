@@ -1,6 +1,11 @@
+
 ## [Tracking JS Data](tracking.md)
 
 Format of data scraped by worker JS for each company that gets sent to logging server.
+
+## [Feed Data](feed.md)
+
+Format of data exported as google PLA or Shopping feed.
 
 ## [Custom Data](custom.md)
 
