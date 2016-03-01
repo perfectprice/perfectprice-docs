@@ -22,6 +22,6 @@ Notes on special fields:
 
 ### Cost
 
-Cost data may be included this feed, following the spec for Cost outlined elsewhere in Perfect Price documentation. 
+Cost data may be included this feed, following the spec for Cost outlined in [Custom Data](custom.md) in Perfect Price documentation. 
 
 
