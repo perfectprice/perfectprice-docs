@@ -13,6 +13,7 @@ https://support.google.com/merchants/answer/188494?hl=en
 Notes on special fields:
 
 | Field | Notes |
+|-------------:|:-------------|
 | __gtin__ | This field is very important for finding products at competitors' sites. Be sure to include if available. | 
 | __mpn__ | This field is also important for finding products at competitors' sites. Be sure to include if available. |
 | __item_group_id__ | While primiarly useful for advertising, this structure is also useful to Perfect Price, if available. If categories and heirarchy is represented elsewhere, this is otpional. | 
