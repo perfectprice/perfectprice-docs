@@ -285,13 +285,15 @@ Example of a ITEM_DETAIL log :
                         "image_url": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/image/370x424/0dc2d03fe217f8c83829496872af24a0/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
                         "price": "20.00",
                         "sku": "44615",
-                        "title": "Phoenix Dan Cong - loose 2 oz tin"
+                        "title": "Phoenix Dan Cong - loose 2 oz tin",
+                        "uii": "12312311"
                     },
                     {
                         "image_url": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/image/370x424/0dc2d03fe217f8c83829496872af24a0/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
                         "price": "156.00",
                         "sku": "41509",
-                        "title": "Phoenix Dan Cong - loose 1 lb bag"
+                        "title": "Phoenix Dan Cong - loose 1 lb bag",
+                        "uii": "04934234"
                     }
                 ],
                 "title": "Phoenix Dan Cong"
@@ -346,7 +348,8 @@ __products__ is defined as follows :
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
-        "title": $title
+        "title": $title,
+        "uii": $uii
     },
     ...
 ]
@@ -390,7 +393,8 @@ __items__ is defined as follows :
         "price": $price,
         "quantity": $quantity,
         "sku": $sku,
-        "title": $title
+        "title": $title,
+        "uii": $uii
     },
     ...
 ]
@@ -451,7 +455,8 @@ __items__ is defined as follows :
         "price": $price,
         "quantity": $quantity,
         "sku" : $sku,
-        "title": $title
+        "title": $title,
+        "uii": $uii
     },
     ...
 ]
