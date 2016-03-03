@@ -201,6 +201,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
             "sku": $sku,
             "stock_count": $stock_count,
             "title": $title,
+            "uii": $uii,
             "variations": $variations
         }
     },
@@ -228,7 +229,8 @@ __variations__ is defined as follows :
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
-        "title": $title
+        "title": $title,
+        "uii": $uii
     },
     ...
 ]
@@ -495,6 +497,7 @@ where
 | title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
 | total | total amount for products with catalog or cart discounts applied.  |
 | total\_discount | sum of catalog and cart discounts applied. |
+| uii | a universally identifiable id (UII) - an ID 1-to-1 associated with each product (or variation if available) - used to join views with purchases, of which value varies based on what is available on each client's web page. |
 
 __meta\_og\_properties__ is defined as follows :
 
