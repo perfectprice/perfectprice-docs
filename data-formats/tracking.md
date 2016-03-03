@@ -229,7 +229,7 @@ __variations__ is defined as follows :
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
-        "title": $title,
+        "title": $variation_title,
         "uii": $uii
     },
     ...
@@ -240,6 +240,7 @@ where
 | Field | Description |
 | -------------: |:------------- |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| variation_title | product-level title + ' ' + variation-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' |
 
 
 Example of a ITEM_DETAIL log :
