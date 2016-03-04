@@ -202,7 +202,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
             "stock_count": $stock_count,
             "title": $title,
             "uii": $uii,
-            "variations": $variations
+            "variants": $variants
         }
     },
     "type": "pageview"
@@ -217,10 +217,10 @@ where
 | options | a list of option type and possible values each option can take for the given product. See "2.3 Common Fields" for details. |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 | stock_count | inventory count |
-| variations | a list of variations of this product. This is different from options in that options is price-agnostic, while each variation is associated with different prices. |
+| variants | a list of variants of this product. This is different from options in that options is price-agnostic, while each variant is associated with different prices. |
 
 
-__variations__ is defined as follows :
+__variants__ is defined as follows :
 
 ```json
 [
@@ -229,7 +229,8 @@ __variations__ is defined as follows :
         "image_url": $image_url,
         "price": $price,
         "sku": $sku,
-        "title": $title,
+        "title": $full_variant_title,
+        "variant": $variant_title,
         "uii": $uii
     },
     ...
@@ -240,6 +241,8 @@ where
 | Field | Description |
 | -------------: |:------------- |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| full_variant_title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' |
+| variant_title | variant-level title, e.g. '30 CAPSULES' |
 
 
 Example of a ITEM_DETAIL log :
@@ -252,7 +255,7 @@ Example of a ITEM_DETAIL log :
             "cookie": "ppu=1f8f43905772406cea79332fe7ba1840; uid=349602443; SLIBeacon_368182260=ECZNEOCSE1455834894808TQHIRIIKZ; SLI2_368182260=ECZNEOCSE1455834894808TQHIRIIKZ.1455834894808.1.1; SLI4_368182260=1455834894808; _gat=1; __utmt=1; VIEWED_PRODUCT_IDS=5074%2C5075; _ga=GA1.3.341494139.1455834867; __utma=11410477.341494139.1455834867.1455834868.1455846369.2; __utmb=11410477.2.10.1455846369; __utmc=11410477; __utmz=11410477.1455834868.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); _sbtk=e30%3D",
             "document_uri": "https://www.harney.com/phoenix-dan-cong.html",
             "domain": "www.harney.com",
-            "title": "Phoenix Dan Cong",
+            "title": "Adrafinil Capsules",
             "url": "https://www.harney.com/phoenix-dan-cong.html"
         },
         "id": "2f3e8b1797e471de254457b753ff433b",
@@ -271,28 +274,30 @@ Example of a ITEM_DETAIL log :
             "meta": {
                 "description": "A nice twisted oolong that has subtle roasted peach flavors.",
                 "image": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/small_image/200x200/9df78eab33525d08d6e5fb8d27136e95/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
-                "title": "Phoenix Dan Cong | Harney & Sons Fine Teas",
+                "title": "Adrafinil Capsules",
                 "type": "product",
                 "url": "https://www.harney.com/phoenix-dan-cong.html"
             },
             "product": {
                 "categories": [
-                    "Tea",
-                    "Phoenix Dan Cong"
+                    "Powder",
+                    "Adrafinil Capsules"
                 ],
-                "variations": [
+                "variants": [
                     {
                         "image_url": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/image/370x424/0dc2d03fe217f8c83829496872af24a0/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
                         "price": "20.00",
                         "sku": "44615",
-                        "title": "Phoenix Dan Cong - loose 2 oz tin",
+                        "title": "Adrafinil Capsules 30 CAPSULES",
+                        "variant": "30 CAPSULES",
                         "uii": "12312311"
                     },
                     {
                         "image_url": "https://livemedia-harneyteas.netdna-ssl.com/media/catalog/product/cache/1/image/370x424/0dc2d03fe217f8c83829496872af24a0/h/-/h-s150805_0012_phoenix_dan_cong.jpg",
                         "price": "156.00",
                         "sku": "41509",
-                        "title": "Phoenix Dan Cong - loose 1 lb bag",
+                        "title": "Adrafinil Capsules 100 CAPSULES",
+                        "variant": "100 CAPSULES",
                         "uii": "04934234"
                     }
                 ],
@@ -502,7 +507,7 @@ where
 | title | title of the product, which MUST BE the same as what’s shown in ITEM_DETAIL logs. |
 | total | total amount for products with catalog or cart discounts applied.  |
 | total\_discount | sum of catalog and cart discounts applied. |
-| uii | a universally identifiable id (UII) - an ID 1-to-1 associated with each product (or variation if available) - used to join views with purchases, of which value varies based on what is available on each client's web page. |
+| uii | a universally identifiable id (UII) - an ID 1-to-1 associated with each product (or variant if available) - used to join views with purchases, of which value varies based on what is available on each client's web page. |
 
 __meta\_og\_properties__ is defined as follows :
 
