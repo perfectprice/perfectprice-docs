@@ -165,7 +165,7 @@ Historical data for our analysis consists of :
 ##### 1) Metrics
 
 | Field | Description | Required |
-|-------------:|:-------------|:-------------|:-------------|
+|-------------:|:-------------|:-------------|
 | __view_count__ | number of times a product is viewed, e.g. web page view, app page load, etc. | Yes | 
 | __purchase\_count__ | number of times a product is purchased. | Yes | 
 | __purchase\_quantity__ | quantity a product is purchased. | Yes | 
@@ -173,7 +173,6 @@ Historical data for our analysis consists of :
 | __add\_to\_cart\_quantity__ | quantity a product is added to cart. | Yes |
 | average\_cart\_quantity | average quantity of items per checkout, this is avereage of sum of quantities for all items in checkouts. | No |
 | average\_cart\_value | average amount spent per checkout. | No |
-
 
 
 \* W.o.l.g. above metrics is aggregated by 2) and 3).
