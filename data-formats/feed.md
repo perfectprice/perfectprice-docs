@@ -8,6 +8,10 @@ Many companies already have data feeds ready to send to Google or other shopping
 
 If you have an export job already configured, you are welcome to start by sending that so we can analyze if it has what we need. Specific fields of interest are listed below, but it is usually better to be overly inclusive. Any heiarchy information and identifiers (UPC, etc.) if available are of utmost importance. 
 
+### Where to send it
+
+Please send to your Perfect Price representative directly, and they will get it processed by the engineering team.
+
 ### Format
 
 We follow the Google specification located here: 
