@@ -15,3 +15,7 @@ Format of raw logs for past days.
 ### [3.1 Aggregation Data](custom/hist-agg.md)
 
 Format of aggregated logs for past days.
+
+## 4. Providing Data
+
+Please email us the CSV or JSON file, until an alternative method is specified here.
