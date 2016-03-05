@@ -1,29 +1,163 @@
-# Historical Data
+# Raw Data
 
-### Introduction
+### 1. Introduction
 
-Historical data for our analysis consists of :
+Generally speaking, raw data must provide basic information so that we could start from
+__aggregations__ such as number of views, purchases, revenue, CVRs, etc. (using __event logs__),
+at varying combinations of __attributes__ including date, time, region, user, etc (using __product data__).
 
-    1) aggregations of core metrics,
-    2) at varying combinations of attributes,
-    3) for each *product*.
+### 2. Event Types
 
-##### 1) Metrics
+##### View / Load
+
+For web services, a __page view__ event is specifically defined as the completion of rendering the page
+content in browsers for the accessed URL. For app services, it is not straight forward to define a
+__page view__ event as there is no standardized notion of completion of rendering contents in apps.
+Hence, for apps, we define '__tapping__' an area inside an app that results in loading relevant contents
+such as product details, or catalogs, etc., is considered as a __page view__ event.
+
+| Type | Description | Example |
+|-------------:|:-------------|:-------------|
+| product detail | a single product detail | [Example](http://www.bluenile.com/build-your-own-ring/diamond-engagement-ring-14k-white-gold_20305?elem=img&track=product) |
+| catalog | a matrix of products and/or subcategories in certain category | [Example](http://www.bluenile.com/build-your-own-ring/settings?track=TitleVintage) |
+| cart | Details (price, quantity, discounts, etc.) of products added to cart/basket | [Example](https://secure.bluenile.com/basket.html) |
+| thank you | Result page loaded after successfully placing an order | |
+| search | a list of products matching query | [Example](http://www.bluenile.com/build-your-own-ring/diamonds) |
+
+##### Click / Tap
+
+For web services, a __click__ event is specifically defined as an action of clicking certain area of
+a page that fires subsequent actions, e.g. form submission, pull down select/options menu, etc.
+For apps, a __tap__ event is touching an area inside an app that results in similar types of subsequent
+actions.
+
+| Type | Description | Example |
+|-------------:|:-------------|:-------------|
+| product detail preview | showing product detail preview | click 'Detail' or 'Preview' to display a sliding sub-window or pop-up modal dialog | 
+| checkout | place an order or make payment | click or tap on 'Submit' or 'Payment' button. |
+| add to cart | add an item into cart/basket | click or tap on 'Add to Cart' buttom. |
+
+
+### 3. Event Log Format
+
+An event log contains common fields and event type specific fields in the following format :
+
+```json
+{
+    $common_field_key1: $common_field_value1,
+    $common_field_key2: $common_field_value2,
+                    :,
+    "properties": {
+        $event_type_specific_field_key1: $event_type_specific_field_value1,
+        $event_type_specific_field_key2: $event_type_specific_field_value2,
+                                    :
+    }
+}
+```
+
+#### Common Fields
+| Field | Description | Required | Example |
+|-------------:|:-------------|:-------------|:-------------|
+| __datetime__ | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
+| __user_id__ | an anonymized character string uniquely identifying a user, if applicable | Yes | 56d61b53283d19956d60a6fa |
+| __event\_type__ | a string indicating the type of event | Yes | 'page\_view', 'add\_to\_cart', etc. See below for more detail. |
+| event\_id | a string uniquely identifying an event | No | 837840745805772274 |
+
+Standard values of __event\_type__ for different types of events :
+
+| Type | Value |
+|-------------:|:-------------|
+| product detail | page\_view |
+| catalog | page\_view | 
+| cart | page\_view |
+| thank you | page\_view |
+| search | page\_view |
+| checkout | checkout |
+| add to cart | add\_to\_cart |
+
+For any other type of events, either use custom values for __event\_type__ as needed or do not add collect them.
+Some examples of custom __event\_type__ values includes :
+
+| Type | Value |
+|-------------:|:-------------|
+| tapping a category | tap\_category |
+| view a billing page in app | view\_checkout\_billing\_step |
+
+#### Event Type Specific Fields
+
+
+##### Variants and Options
+
+When a product may take a variety of forms, e.g. size, color, etc., this variation may result in
+changes in prices for each variation. For instance, a tea product may be sold in a 1Oz tin can at
+$10.00 USD, or as a 20 sachet bags at $20.00 USD, or a T-shirt comes in different colors and sizes,
+while they all are sold at $15.00 USD. When a variation incurs chage in price, each variation is
+called a __variant__, while if not, it is called an __option__. Distinguishing variants from
+options is very important as our analysis is tightly coupled with prices.
+
+
+##### product detail
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
-| __view_count__ | number of times a product is viewed, e.g. web page view, app page load, etc. | Yes | 
-| __purchase\_count__ | number of times a product is purchased. | Yes | 
-| __purchase\_quantity__ | quantity a product is purchased. | Yes | 
-| __add\_to\_cart\_count__ | number of times a product is added to cart. | Yes | 
-| __add\_to\_cart\_quantity__ | quantity a product is added to cart. | Yes |
-| average\_cart\_quantity | average quantity of items per checkout, this is avereage of sum of quantities for all items in checkouts. | No |
-| average\_cart\_value | average amount spent per checkout. | No |
+| __id__ | a string that uniquely identifies a product or a variant| Yes |
+| __title__ | name of a product or a variant, e.g. Earl Grey Tea | Yes |
+| __type__ | a string, 'product' if this is a product, 'variant' if this is a variant | Yes |
+| __price__ | price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. | Yes |
+| __url__ | URL address of page user visited | Yes, if a web page view log. |
+| image_url | a URL of the thumbnail image of this product. | No |
+| catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| options | an array of options for this product or variant. See below for more detail. | Yes if options exist, or No |
+| user\_agent | a user agent string for web page views | No |
+| app\_version | version of app used | No |
+| os\_version | version of OS | No |
 
+Field "options" is defined as follows :
 
-\* W.o.l.g. above metrics is aggregated by 2) and 3).
+```json
+[
+    {
+        "type": $option_name,
+        "values": $option_value_array
+    },
+    ...
+]
+```
 
-##### 2) Attributes
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| option_name | a string that indicates the name of this option, e.g. "size", "weight", "clarity", "color", etc. |
+| option\_value\_array | an array of values one or more of which this option can take |
+
+An example of options :
+
+```json
+[
+    {
+        "type": "Waist",
+        "values": [
+            "28",
+            "30",
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+        ]
+    },
+    {
+        "type": "Length",
+        "values": [
+            "32",
+            "36"
+        ]
+    }
+]
+```
+
+### Attributes
 
 | Field | Description | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|
