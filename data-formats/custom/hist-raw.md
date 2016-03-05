@@ -8,7 +8,7 @@ at varying combinations of __attributes__ including date, time, region, user, et
 
 ### 2. Event Types
 
-##### View / Load
+#### 2.1 View / Load
 
 For web services, a __page view__ event is specifically defined as the completion of rendering the page
 content in browsers for the accessed URL. For app services, it is not straight forward to define a
@@ -24,7 +24,7 @@ such as product details, or catalogs, etc., is considered as a __page view__ eve
 | thank you | Result page loaded after successfully placing an order | |
 | search | a list of products matching query | [Example](http://www.bluenile.com/build-your-own-ring/diamonds) |
 
-##### Click / Tap
+#### 2.2 Click / Tap
 
 For web services, a __click__ event is specifically defined as an action of clicking certain area of
 a page that fires subsequent actions, e.g. form submission, pull down select/options menu, etc.
@@ -47,15 +47,12 @@ An event log contains common fields and event type specific fields in the follow
     $common_field_key1: $common_field_value1,
     $common_field_key2: $common_field_value2,
                     :,
-    "properties": {
-        $event_type_specific_field_key1: $event_type_specific_field_value1,
-        $event_type_specific_field_key2: $event_type_specific_field_value2,
-                                    :
-    }
+    "properties": $event_specific_fields
 }
 ```
 
-#### Common Fields
+#### 3.1 Common Fields
+
 | Field | Description | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|
 | __datetime__ | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
@@ -83,34 +80,55 @@ Some examples of custom __event\_type__ values includes :
 | tapping a category | tap\_category |
 | view a billing page in app | view\_checkout\_billing\_step |
 
-#### Event Type Specific Fields
+An example of common fields :
 
+```json
+{
+    "datetime": "2016-01-23T22:49:05+00:00",
+    "userid": "d61b53283d19956d60a6fa",
+    "event_type": "page_view",
+    "properties": $event_type_specific_data
+}
+```
 
-##### Variants and Options
+#### 3.2 Event Type Specific Fields
 
-When a product may take a variety of forms, e.g. size, color, etc., this variation may result in
-changes in prices for each variation. For instance, a tea product may be sold in a 1Oz tin can at
-$10.00 USD, or as a 20 sachet bags at $20.00 USD, or a T-shirt comes in different colors and sizes,
-while they all are sold at $15.00 USD. When a variation incurs chage in price, each variation is
-called a __variant__, while if not, it is called an __option__. Distinguishing variants from
-options is very important as our analysis is tightly coupled with prices.
+When a product is presented to users with properties that can take one or more than among a variety of values,
+e.g. size 'Small' from a set of choices [ 'Small', 'Medium', 'Large' ], or color 'Red' among [ 'Blue', 'Green',
+'Purple', 'Red', 'White' ], etc., a particulr set of choices of those properties may result in changes in prices
+depending on the choice. For instance, a tea product may be sold in a 1Oz tin can at $10.00 USD, or as a 20 sachet
+bags at $20.00 USD, or a T-shirt comes in different colors and sizes, while they all are sold at $15.00 USD.
 
+When a variation incurs change in price, each variation is called a __variant__, while if not, it is called an
+__option__. Distinguishing variants from options is important as our analysis is tightly coupled with prices.
 
-##### product detail
+##### product detail page views
+
+Format of event\_type\_specific\_data is shown here, without common fields for simplicity but must be presented in real logs.
+
+```json
+{
+    "price": $price,
+    "title": $title,
+    "uii": $uii,
+    "url": $url,
+    "options": $options,
+    "sku": $sku,
+    "variants": $variants
+}
+```
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
-| __id__ | a string that uniquely identifies a product or a variant| Yes |
-| __title__ | name of a product or a variant, e.g. Earl Grey Tea | Yes |
-| __type__ | a string, 'product' if this is a product, 'variant' if this is a variant | Yes |
-| __price__ | price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. | Yes |
+| __price__ | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+| __title__ | name of a product e.g. Earl Grey Tea | Yes |
+| __uii__ | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | __url__ | URL address of page user visited | Yes, if a web page view log. |
-| image_url | a URL of the thumbnail image of this product. | No |
 | catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
-| options | an array of options for this product or variant. See below for more detail. | Yes if options exist, or No |
-| user\_agent | a user agent string for web page views | No |
-| app\_version | version of app used | No |
-| os\_version | version of OS | No |
+| image_url | a URL of the thumbnail image of this product. | No |
+| options | an array of options for this product. See below for more detail. | No |
+| sku | SKU of product. | No |
+| variants | an array of variants for this product. See below for more detail. | No |
 
 Field "options" is defined as follows :
 
@@ -156,6 +174,112 @@ An example of options :
     }
 ]
 ```
+
+\* Note that options sent in for product detail page view events includes ALL possible values each option can take, not a particular choice uses chose.
+
+Field "variants" is defined as follows :
+
+```json
+[
+    {
+        "catalog_discount": $catalog_discount,
+        "image_url": $image_url,
+        "price": $price,
+        "properties": $properties,
+        "sku": $sku,
+        "title": $full_variant_title,
+        "uii": $uii,
+        "variant": $variant_title
+    },
+    ...
+]
+```
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| full_variant_title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' |
+| variant_title | variant-level title, e.g. '30 CAPSULES' |
+
+\* In most cases, variants are presented to users altogether in a single page view. All such variants in a single page must be stored in the same event log.
+
+Example of a product detail page view log :
+
+[ A product with options ]
+
+```json
+{
+    "datetime": "2016-01-23T22:49:05+00:00",
+    "userid": "d61b53283d19956d60a6fa",
+    "event_type": "page_view",
+    "properties": {
+        "title": "Petite Solitaire Engagement Ring",
+        "variants": [
+            {
+                "currency": "USD",
+                "market": "en-US",
+                "price": "830",
+                "sku": "19010",
+                "image_url": "http://img.bluenile.com/is/image/bluenile/-petite-solitaire-ring-platinum-/setting_template_main?$phab_detailmain$&$diam_shape=is{bluenile/main_RD_standard_100}&$diam_position=0,50&$ring_position=0,0&$ring_sku=is{bluenile/19010_setmain}",
+                "title": "Petite Solitaire Engagement Ring Pt",
+                "uii": "19010",
+                "url": "http://www.bluenile.com/build-your-own-ring/white-gold-engagement-ring-setting_19287?action=18kWhiteGoldSelect&track=alternate-metalsCustomizer",
+                "variant": "Pt"
+                "properties": {
+                    "Width": "1.9mm",
+                    "Prong Metal": "Platinum",
+                    "Rhodium Plated": "Yes"
+                }
+            },
+            {
+                "currency": "USD",
+                "market": "en-US",
+                "price": "690",
+                "sku": "19287",
+                "image_url": "http://img.bluenile.com/is/image/bluenile/-petite-solitaire-ring-platinum-/setting_template_main?$phab_detailmain$&$diam_shape=is{bluenile/main_RD_standard_100}&$diam_position=0,50&$ring_position=0,0&$ring_sku=is{bluenile/19010_setmain}",
+                "title": "Petite Solitaire Engagement Ring 18k",
+                "uii": "19010",
+                "url": "http://www.bluenile.com/build-your-own-ring/white-gold-engagement-ring-setting_19287?action=18kWhiteGoldSelect&track=alternate-metalsCustomizer",
+                "variant": "18k"
+            }
+        ]
+    }
+}
+
+```
+```json
+{
+    "datetime": "2016-01-23T22:49:05+00:00",
+    "userid": "d61b53283d19956d60a6fa",
+    "event_type": "page_view",
+    "properties": {
+        "price": "23.99",
+        "title": "Adrafinil Capsules",
+        "uii": "ANDRAFINIL-CAPSULES-30",
+        "options": [
+            {
+                "type": "Size",
+                "values": [
+                    "15 Grams",
+                    "30 Grams"
+                ]
+            }
+        ],
+        "url": "http://www.powdercity.com/products/adrafinil-capsules",
+        "sku: "ANDRAFINIL-CAPSULES-30",
+    }
+}
+
+```
+
+[ A product with variants ]
+
+##### catalog page views
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| catalogs
 
 ### Attributes
 
