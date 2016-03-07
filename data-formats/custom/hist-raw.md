@@ -153,7 +153,7 @@ where
 | properties | a dictionary of key value pairs that contain static information about the product, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
 | title | name of a product e.g. Earl Grey Tea. In case variants exist, this is the represenatative product name for all variants. | Yes |
-| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes, if there are no variants. |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of product page user visited | Yes, if a web page view log. |
 | variants | an array of variants for this product. See below for more detail. | No |
 
@@ -238,7 +238,7 @@ where
 | properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
 | full_variant_title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
-| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
+| uii | a string that uniquely identifies a variant, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 | variant_title | variant-level title, e.g. '30 CAPSULES' | Yes |
 
@@ -248,6 +248,8 @@ stored in the same event log.
 \* An _option_ is different from a _property_ in that option is for which value users have freedom to choose among a few possibilities,
 e.g. size of T-shirts, while a property is static to a product such that users do not have freedom choose its value, e.g. size, color,
 or weight of diamonds.
+
+\* Even if a product comes in variants, a product-level _uii_ must be provided, by which variants for this product could be grouped.
 
 ##### Examples
 
