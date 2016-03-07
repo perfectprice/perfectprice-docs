@@ -645,7 +645,7 @@ This event occurs when a user _adds_ an item into cart or basket. For this event
 
 where
 
-| Field | Description |
+| Field | Description | Requires |
 | -------------:|:-------------|:-------------|
 | catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
 | image_url | a URL of the thumbnail image of this product. | No |
