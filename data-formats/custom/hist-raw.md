@@ -34,7 +34,6 @@ actions.
 | Type | Description | Example |
 |-------------:|:-------------|:-------------|
 | add to cart | add an item into cart/basket | click or tap on 'Add to Cart' buttom. |
-| search | search with a query | type search keywords and/or options and click or tap on 'Search' button |
 
 
 ### 3. Event Logs
@@ -130,6 +129,7 @@ event\_specific\_fields is defined as follows :
     "market": $market,
     "options": $options,
     "price": $price,
+    "properties": $properties,
     "sku": $sku,
     "title": $title,
     "uii": $uii,
@@ -138,20 +138,23 @@ event\_specific\_fields is defined as follows :
 }
 ```
 
+where
+
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
-| availability | a boolean value, True if product is displayed as available, False otherwise | Yes, if there are no variants. |
-| catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| availability | a boolean value, True if this product is displayed as available, False otherwise | Yes, if there are no variants. |
+| catalog_discount | discount publicly announced and applied automatically to this product. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
 | categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ["Home", "Groceries", "Vegetables", "Organic"] | No |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No |
 | image_url | a URL of the thumbnail image of this product. | No |
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No |
 | options | an array of options for this product. See below for more detail. | No |
-| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes, if there are no variants. |
+| price | price of this product, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes, if there are no variants. |
+| properties | a dictionary of key value pairs that contain static information about the product, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
 | title | name of a product e.g. Earl Grey Tea. In case variants exist, this is the represenatative product name for all variants. | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes, if there are no variants. |
-| url | URL address of page user visited | Yes, if a web page view log. |
+| url | URL address of product page user visited | Yes, if a web page view log. |
 | variants | an array of variants for this product. See below for more detail. | No |
 
 Field "options" is defined as follows :
@@ -228,15 +231,15 @@ where
 
 | Field | Description | Required |
 | -------------:|:-------------|:-------------|
-| availability | a boolean value, True if product is displayed as available, False otherwise | Yes, if there are no variants. |
-| catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
-| image_url | a URL of the thumbnail image of this product. | No |
-| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
+| availability | a boolean value, True if this variant is displayed as available, False otherwise | Yes, if there are no variants. |
+| catalog_discount | discount publicly announced and applied automatically to this variant. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| image_url | a URL of the thumbnail image of this variant. | No |
+| price | price of this variant, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
 | properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
 | title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
-| url | URL address of page user visited | Yes, if a web page view log. |
+| url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 | variant_title | variant-level title, e.g. '30 CAPSULES' | Yes |
 
 \* In most cases, variants are presented to users altogether in a single page view. All such variants in a single page must be
@@ -366,6 +369,15 @@ category or search result. For this event type, event_specific_fields is defined
 }
 ```
 
+where
+
+| Field | Description | Required |
+| -------------:|:-------------|:-------------|
+| categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ["Home", "Groceries", "Vegetables", "Organic"] | No |
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No |
+
+
 __products__ is an array of product information in this catalog view, which is defined as follows :
 
 ```json
@@ -376,7 +388,8 @@ __products__ is an array of product information in this catalog view, which is d
         "price": $price,
         "sku": $sku,
         "title": $title,
-        "uii": $uii
+        "uii": $uii,
+        "url": $url
     }    
 ]
 ```
@@ -385,7 +398,13 @@ where
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
+| catalog_discount | discount publicly announced and applied automatically to this variant. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| image_url | a URL of the thumbnail image of this variant. | No |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+| sku | SKU of product. | No |
+| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
+| url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 
 
 ---
@@ -409,6 +428,16 @@ Format of event\_specific\_fields is defined as follows :
 
 ```
 
+where
+
+| Field | Description | Required |
+| -------------:|:-------------|:-------------|
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No |
+| total | total amount for products with catalog or cart discounts applied. | Yes |
+| total_discount | sum of catalog and cart discounts applied. | Yes |
+
+
 __items__ is a list of products added to cart, which is defined as follows :
 
 ```json
@@ -428,11 +457,19 @@ __items__ is a list of products added to cart, which is defined as follows :
 ]
 ```
 
+where
+
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
+| cart_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes. | No |
+| catalog_discount | discount publicly announced and applied automatically to this variant. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
 | options | chosen options for an added item, which is different from options in product detail pages, where options contain _all_ possible values each option can take. | No |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | quantity | an integer value that contains the purchase count of this item | Yes |
+| sku | SKU of product. | No |
+| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
+| url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 
 ---
 
@@ -460,11 +497,17 @@ For this event type, event_specific_fields is defined as follows :
 }
 ```
 
+where
+
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No |
 | order_id | a string that is uniquely identifies this checkout | Yes |
 | shipping | shipping method. See below for more details. | No |
 | tax | total tax applied. | No |
+| total | total amount for products with catalog or cart discounts applied. | Yes |
+| total_discount | sum of catalog and cart discounts applied. | Yes |
 
 __items__ is a list of products purchased, which is defined as follows :
 
@@ -478,17 +521,26 @@ __items__ is a list of products purchased, which is defined as follows :
         "quantity": $quantity,
         "sku": $sku,
         "title": $title,
-        "uii": $uii
+        "uii": $uii,
+        "url": $url
     },
     ...
 ]
 ```
 
+where
+
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
+| cart_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes. | No |
+| catalog_discount | discount publicly announced and applied automatically to this variant. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
 | options | chosen options for an added item, which is different from options in product detail pages, where options contain _all_ possible values each option can take. | No |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | quantity | an integer value that contains the purchase count of this item | Yes |
+| sku | SKU of product. | No |
+| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
+| url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 
 __shipping__ is defined as follows :
 
@@ -532,6 +584,13 @@ For this event type, event\_specific\_fields is defined as follows :
 }
 ```
 
+where
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No |
+
 __query_parameter__ is defined as an [HTTP query string](https://en.wikipedia.org/wiki/Query_string) containing query parameters
 used in the search. Note that this does not contain the host and domain names.
 
@@ -545,7 +604,8 @@ __products__ is an array of product information in this catalog view, which is d
         "price": $price,
         "sku": $sku,
         "title": $title,
-        "uii": $uii
+        "uii": $uii,
+        "url": $url
     }    
 ]
 ```
@@ -554,4 +614,42 @@ where
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
+| catalog_discount | discount publicly announced and applied automatically to this variant. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| image_url | a URL of the thumbnail image of this variant. | No |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+| sku | SKU of product. | No |
+| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
+| url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
+
+---
+
+##### Add To Cart
+
+This event occurs when a user _adds_ an item into cart or basket. For this event type, event\_specific\_fields is defined as follows :
+
+```json
+{
+    "catalog_discount": $catalog_discount,
+    "image_url": $image_url,
+    "price": $price,
+    "quantity": $quantity,
+    "sku": $sku,
+    "title": $title,
+    "uii": $uii,
+    "url": $url
+}
+```
+
+where
+
+| Field | Description |
+| -------------:|:-------------|:-------------|
+| catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| image_url | a URL of the thumbnail image of this product. | No |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
+| properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
+| sku | SKU of product. | No |
+| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
+| url | URL address of page user visited | Yes, if a web page view log. |
