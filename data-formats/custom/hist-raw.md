@@ -21,7 +21,8 @@ such as product details, or catalogs, etc., is considered as a __page view__ eve
 | product detail | a single product detail, or its preview | [Example](http://www.bluenile.com/build-your-own-ring/diamond-engagement-ring-14k-white-gold_20305?elem=img&track=product) |
 | catalog | a matrix of products and/or subcategories in certain category | [Example](http://www.bluenile.com/build-your-own-ring/settings?track=TitleVintage) |
 | cart | Details (price, quantity, discounts, etc.) of products added to cart/basket | [Example](https://secure.bluenile.com/basket.html) |
-| thank you | Result page loaded after successfully placing an order | |
+| checkout | Result page loaded after successfully placing an order | N/A |
+| adjustment | Changes in purchases, e.g. refund, canellation | N/A |
 | search results | a list of products that match query | [Example](http://www.bluenile.com/build-your-own-ring/diamonds) |
 
 #### 2.2 Click / Tap
@@ -33,7 +34,6 @@ actions.
 
 | Type | Description | Example |
 |-------------:|:-------------|:-------------|
-| checkout | place an order or make payment | click or tap on 'Submit' or 'Payment' button. |
 | add to cart | add an item into cart/basket | click or tap on 'Add to Cart' buttom. |
 | search | search with a query | type search keywords and/or options and click or tap on 'Search' button |
 
@@ -74,7 +74,6 @@ Standard values of __event\_type__ for different types of events :
 | product detail | pageview |
 | catalog | pageview | 
 | cart | pageview |
-| thank you | pageview |
 | search | pageview |
 | checkout | checkout |
 | add to cart | add\_to\_cart |
@@ -432,19 +431,20 @@ __items__ is a list of products added to cart, which is defined as follows :
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
-| options | chosen options for an added item, which is different from options in product detail pages, where options contain _all_ possible values each option can take. |
-| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
-| quantity | an integer value that contains the purchase count of this item |
+| options | chosen options for an added item, which is different from options in product detail pages, where options contain _all_ possible values each option can take. | No |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+| quantity | an integer value that contains the purchase count of this item | Yes |
 
 ---
 
-##### Thank You (Checkout) Page View
+##### Checkout
 
-Most shopping sites either forwards users to their payment page or an associated external payment page, e.g. Paypal checkout page.
-After payments are made successfully, users are redirected to a Thank You page, which often contains information about the purchase,
-e.g. order ID, list of items purchased, etc., in addition to a simple confirmation note such as "Thank You" message.
+This event occurs when items are _actually_ purchased. This therefore is a log that gets sent not on a "page load" event, but
+a successful completion of "purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making
+payments. Note that event_specific_fields for this event is almost identical to that of 'Thank You' (Checkout) page views. See
+end of this section for an important note on how to handle this issue.
 
-This event occurs when a user reaches Thank You pages. For this event type, event_specific_fields is defined as follows :
+For this event type, event_specific_fields is defined as follows :
 
 ```json
 {
@@ -508,6 +508,11 @@ where
 | option | string containing the shipping option, e.g. Fast (3 Days), Standard (5-7 Days), etc. | Yes |
 | cost | the shipping cost. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 
+___Adjustments on Checkouts___
+>
+> Note that we do not back propagate subsequent changes in purchase information due to reasons such as refunds or canellations
+> in our current scope of analytical service. Please contact us via email support@perfectprice.io for further discussion.
+
 
 ---
 
@@ -557,12 +562,8 @@ where
 
 ##### Checkout
 
-This event occurs when items are _actually_ purchased. This therefore is a log that gets sent not on a "page load" event, but
-a successful completion of "purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making
-payments.
 
-Information that could be in event_specific_fields is almost identical to that of 'Thank You' (Checkout) page views. If they do
-have identical 
+For this event type, event\_specific\_fields is defined as follows :
 
 ```json
 {
@@ -615,7 +616,9 @@ also all related subsequent performance analysis such as promotion effectiveness
 > 
 > | Checkout Has Purchase Info? | Yes | No |
 > |-------------:|:-------------|:-------------|
-> | __Solution__ | Send Checkout Log | Send Thank You Log |   |
+> | __Solution__ | Send Checkout Log | Send Thank You Log |
+>
+> It is possible that when purchase information is not available at both checkout and thank you page events, 
 
 
 
