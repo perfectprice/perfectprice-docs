@@ -149,7 +149,7 @@ where
 | image_url | a URL of the thumbnail image of this product. | No |
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No |
 | options | an array of options for this product. See below for more detail. | No |
-| price | price of this product, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes, if there are no variants. |
+| price | price of this product, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes, if there are no variants. |
 | properties | a dictionary of key value pairs that contain static information about the product, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
 | title | name of a product e.g. Earl Grey Tea. In case variants exist, this is the represenatative product name for all variants. | Yes |
@@ -234,7 +234,7 @@ where
 | availability | a boolean value, True if this variant is displayed as available, False otherwise | Yes, if there are no variants. |
 | catalog_discount | discount publicly announced and applied automatically to this variant. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
 | image_url | a URL of the thumbnail image of this variant. | No |
-| price | price of this variant, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
+| price | price of this variant, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
 | full_variant_title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
@@ -647,7 +647,7 @@ where
 | -------------:|:-------------|:-------------|
 | catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
 | image_url | a URL of the thumbnail image of this product. | No |
-| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
 | title | name of a product. In case variants exist, this is the represenatative product name for all variants. | Yes |
