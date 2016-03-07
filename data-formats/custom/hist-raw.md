@@ -237,7 +237,7 @@ where
 | price | price of this variant, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
 | properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
-| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| full_variant_title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 | variant_title | variant-level title, e.g. '30 CAPSULES' | Yes |
@@ -402,7 +402,7 @@ where
 | image_url | a URL of the thumbnail image of this variant. | No |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | sku | SKU of product. | No |
-| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| title | name of a product. In case variants exist, this is the represenatative product name for all variants. | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 
@@ -467,7 +467,7 @@ where
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | quantity | an integer value that contains the purchase count of this item | Yes |
 | sku | SKU of product. | No |
-| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| title | name of a product. In case variants exist, this is the represenatative product name for all variants. | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 
@@ -538,7 +538,7 @@ where
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | quantity | an integer value that contains the purchase count of this item | Yes |
 | sku | SKU of product. | No |
-| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| title | name of a product. In case variants exist, this is the represenatative product name for all variants. | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 
@@ -618,7 +618,7 @@ where
 | image_url | a URL of the thumbnail image of this variant. | No |
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
 | sku | SKU of product. | No |
-| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| title | name of a product. In case variants exist, this is the represenatative product name for all variants. | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
 
@@ -650,6 +650,6 @@ where
 | price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
 | properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
 | sku | SKU of product. | No |
-| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| title | name of a product. In case variants exist, this is the represenatative product name for all variants. | Yes |
 | uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
 | url | URL address of page user visited | Yes, if a web page view log. |
