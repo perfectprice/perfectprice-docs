@@ -22,7 +22,6 @@ such as product details, or catalogs, etc., is considered as a __page view__ eve
 | catalog | a matrix of products and/or subcategories in certain category | [Example](http://www.bluenile.com/build-your-own-ring/settings?track=TitleVintage) |
 | cart | Details (price, quantity, discounts, etc.) of products added to cart/basket | [Example](https://secure.bluenile.com/basket.html) |
 | checkout | Result page loaded after successfully placing an order | N/A |
-| adjustment | Changes in purchases, e.g. refund, canellation | N/A |
 | search results | a list of products that match query | [Example](http://www.bluenile.com/build-your-own-ring/diamonds) |
 
 #### 2.2 Click / Tap
@@ -300,7 +299,7 @@ or weight of diamonds.
                 "title": "Petite Solitaire Engagement Ring Pt",
                 "uii": "19010",
                 "url": "http://www.bluenile.com/build-your-own-ring/white-gold-engagement-ring-setting_19287?action=18kWhiteGoldSelect&track=alternate-metalsCustomizer",
-                "variant": "Pt"
+                "variant": "Pt",
                 "properties": {
                     "Width": "1.9mm",
                     "Prong Metal": "Platinum",
