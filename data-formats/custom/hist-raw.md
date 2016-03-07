@@ -18,11 +18,11 @@ such as product details, or catalogs, etc., is considered as a __page view__ eve
 
 | Type | Description | Example |
 |-------------:|:-------------|:-------------|
-| product detail | a single product detail | [Example](http://www.bluenile.com/build-your-own-ring/diamond-engagement-ring-14k-white-gold_20305?elem=img&track=product) |
+| product detail | a single product detail, or its preview | [Example](http://www.bluenile.com/build-your-own-ring/diamond-engagement-ring-14k-white-gold_20305?elem=img&track=product) |
 | catalog | a matrix of products and/or subcategories in certain category | [Example](http://www.bluenile.com/build-your-own-ring/settings?track=TitleVintage) |
 | cart | Details (price, quantity, discounts, etc.) of products added to cart/basket | [Example](https://secure.bluenile.com/basket.html) |
 | thank you | Result page loaded after successfully placing an order | |
-| search | a list of products matching query | [Example](http://www.bluenile.com/build-your-own-ring/diamonds) |
+| search results | a list of products that match query | [Example](http://www.bluenile.com/build-your-own-ring/diamonds) |
 
 #### 2.2 Click / Tap
 
@@ -33,42 +33,49 @@ actions.
 
 | Type | Description | Example |
 |-------------:|:-------------|:-------------|
-| product detail preview | showing product detail preview | click 'Detail' or 'Preview' to display a sliding sub-window or pop-up modal dialog | 
 | checkout | place an order or make payment | click or tap on 'Submit' or 'Payment' button. |
 | add to cart | add an item into cart/basket | click or tap on 'Add to Cart' buttom. |
+| search | search with a query | type search keywords and/or options and click or tap on 'Search' button |
 
 
-### 3. Event Log Format
+### 3. Event Logs
 
-An event log contains common fields and event type specific fields in the following format :
+#### 3.1 Basic Format
+
+An event log is in [JSON](https://en.wikipedia.org/wiki/JSON) format that contains common fields and event
+type specific fields in the following format :
 
 ```json
 {
-    $common_field_key1: $common_field_value1,
-    $common_field_key2: $common_field_value2,
-                    :,
+    $common_fields,
     "properties": $event_specific_fields
 }
 ```
 
-#### 3.1 Common Fields
+| Field | Description |
+|-------------:|:-------------|
+| common_fields| fields that are common to any event log |
+| event\_specific\_fields | fields that vary depending on event type |
+
+#### 3.2 Common Fields
 
 | Field | Description | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|
-| __datetime__ | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
-| __user_id__ | an anonymized character string uniquely identifying a user, if applicable | Yes | 56d61b53283d19956d60a6fa |
-| __event\_type__ | a string indicating the type of event | Yes | 'page\_view', 'add\_to\_cart', etc. See below for more detail. |
+| datetime | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
+| event\_type | a string indicating the type of event | Yes | 'pageview', 'add\_to\_cart', etc. See below for more detail. |
+| user_id | an anonymized character string uniquely identifying a user, if applicable | Yes | 56d61b53283d19956d60a6fa |
+| version | a log version string in “integer.integer.integer” format, default = 1.0.0 | Yes | 1.0.0 |
 | event\_id | a string uniquely identifying an event | No | 837840745805772274 |
 
 Standard values of __event\_type__ for different types of events :
 
 | Type | Value |
 |-------------:|:-------------|
-| product detail | page\_view |
-| catalog | page\_view | 
-| cart | page\_view |
-| thank you | page\_view |
-| search | page\_view |
+| product detail | pageview |
+| catalog | pageview | 
+| cart | pageview |
+| thank you | pageview |
+| search | pageview |
 | checkout | checkout |
 | add to cart | add\_to\_cart |
 
@@ -86,48 +93,67 @@ An example of common fields :
 {
     "datetime": "2016-01-23T22:49:05+00:00",
     "userid": "d61b53283d19956d60a6fa",
-    "event_type": "page_view",
-    "properties": $event_type_specific_data
+    "event_type": "pageview",
+    "properties": $event_specific_fields
 }
 ```
 
-#### 3.2 Event Type Specific Fields
+#### 3.3 Event Specific Fields
 
-When a product is presented to users with properties that can take one or more than among a variety of values,
+##### Variants vs. Options
+
+When a product is presented to users with properties that can take one or more than one among a variety of values,
 e.g. size 'Small' from a set of choices [ 'Small', 'Medium', 'Large' ], or color 'Red' among [ 'Blue', 'Green',
 'Purple', 'Red', 'White' ], etc., a particulr set of choices of those properties may result in changes in prices
-depending on the choice. For instance, a tea product may be sold in a 1Oz tin can at $10.00 USD, or as a 20 sachet
+depending on the choice. For instance, a tea product may be sold in a 1oz tin can at $10.00 USD, or as a 20 sachet
 bags at $20.00 USD, or a T-shirt comes in different colors and sizes, while they all are sold at $15.00 USD.
-
 When a variation incurs change in price, each variation is called a __variant__, while if not, it is called an
 __option__. Distinguishing variants from options is important as our analysis is tightly coupled with prices.
 
-##### product detail page views
+Following sections describe formats of varying event\_specific\_fields for different types of events, where
+definitions and examples are presented without common\_fields for simplicity of explanation. Certain non-required
+fields may be omitted if not available or applicable.
 
-Format of event\_type\_specific\_data is shown here, without common fields for simplicity but must be presented in real logs.
+---
+
+##### Product Detail Page View
+
+This event occurs when a user views a page that contains details about a single product, or a preview info of
+a product via simple overlays like a sliding <DIV> or a pop-up modal dialog. For this event type,
+event\_specific\_fields is defined as follows :
 
 ```json
 {
+    "availability": $availability,
+    "categories": $categories,
+    "catalog_discount": $catalog_discount,
+    "currency": $currency,
+    "image_url": $image_url,
+    "market": $market,
+    "options": $options,
     "price": $price,
+    "sku": $sku,
     "title": $title,
     "uii": $uii,
     "url": $url,
-    "options": $options,
-    "sku": $sku,
     "variants": $variants
 }
 ```
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
-| __price__ | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
-| __title__ | name of a product e.g. Earl Grey Tea | Yes |
-| __uii__ | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
-| __url__ | URL address of page user visited | Yes, if a web page view log. |
+| availability | a boolean value, True if product is displayed as available, False otherwise | Yes, if there are no variants. |
 | catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| categories | a list of categories name(s), e.g. "Home > Groceries > Vegetables > Organic" will be ["Home", "Groceries", "Vegetables", "Organic"] | No |
+| currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No |
 | image_url | a URL of the thumbnail image of this product. | No |
+| market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No |
 | options | an array of options for this product. See below for more detail. | No |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes, if there are no variants. |
 | sku | SKU of product. | No |
+| title | name of a product e.g. Earl Grey Tea. In case variants exist, this is the represenatative product name for all variants. | Yes |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes, if there are no variants. |
+| url | URL address of page user visited | Yes, if a web page view log. |
 | variants | an array of variants for this product. See below for more detail. | No |
 
 Field "options" is defined as follows :
@@ -136,7 +162,8 @@ Field "options" is defined as follows :
 [
     {
         "type": $option_name,
-        "values": $option_value_array
+        "values": $option_value_array,
+        "unit": $option_unit
     },
     ...
 ]
@@ -144,10 +171,11 @@ Field "options" is defined as follows :
 
 where
 
-| Field | Description |
-| -------------: |:------------- |
-| option_name | a string that indicates the name of this option, e.g. "size", "weight", "clarity", "color", etc. |
-| option\_value\_array | an array of values one or more of which this option can take |
+| Field | Description | Required |
+| -------------:|:-------------|:------------- |
+| option_name | a string that indicates the name of this option, e.g. "size", "weight", "clarity", "color", etc. | Yes |
+| option\_value\_array | an array of values one or more of which this option can take | Yes |
+| option\_unit | a string for option\_value | No |
 
 An example of options :
 
@@ -163,13 +191,16 @@ An example of options :
             "36",
             "38",
             "40"
-        ]
+        ],
+        "unit": "inch"
     },
     {
-        "type": "Length",
+        "type": "Size",
         "values": [
-            "32",
-            "36"
+            "S",
+            "M",
+            "L",
+            "XL"
         ]
     }
 ]
@@ -182,6 +213,7 @@ Field "variants" is defined as follows :
 ```json
 [
     {
+        "availability": $availability,
         "catalog_discount": $catalog_discount,
         "image_url": $image_url,
         "price": $price,
@@ -196,29 +228,73 @@ Field "variants" is defined as follows :
 ```
 where
 
-| Field | Description |
-| -------------: |:------------- |
-| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
-| full_variant_title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' |
-| variant_title | variant-level title, e.g. '30 CAPSULES' |
+| Field | Description | Required |
+| -------------:|:-------------|:-------------|
+| availability | a boolean value, True if product is displayed as available, False otherwise | Yes, if there are no variants. |
+| catalog_discount | discount publicly announced and applied automatically. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
+| image_url | a URL of the thumbnail image of this product. | No |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc. | Yes |
+| properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
+| sku | SKU of product. | No |
+| title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
+| uii | a string that uniquely identifies a product, e.g. stock number, SKU, UPC, etc. | Yes |
+| url | URL address of page user visited | Yes, if a web page view log. |
+| variant_title | variant-level title, e.g. '30 CAPSULES' | Yes |
 
-\* In most cases, variants are presented to users altogether in a single page view. All such variants in a single page must be stored in the same event log.
+\* In most cases, variants are presented to users altogether in a single page view. All such variants in a single page must be
+stored in the same event log.
 
-Example of a product detail page view log :
+\* An _option_ is different from a _property_ in that option is for which value users have freedom to choose among a few possibilities,
+e.g. size of T-shirts, while a property is static to a product such that users do not have freedom choose its value, e.g. size, color,
+or weight of diamonds.
 
-[ A product with options ]
+##### Examples
+
+[ A product without options or variants ]
 
 ```json
 {
     "datetime": "2016-01-23T22:49:05+00:00",
     "userid": "d61b53283d19956d60a6fa",
-    "event_type": "page_view",
-    "properties": {
+    "event_type": "pageview",
+    "properties":
+    {
+        "catalog_discount": "2.05",
+        "categories":
+        [
+            "Home",
+            "Bundle",
+            "E-Cigarette",
+            "Juice"
+        ],
+        "currency": "USD",
+        "image_url": "http://www.myfreedomsmokes.com/media/catalog/product/cache/1/image/750x/040ec09b1e35df139433887a97daa66f/k/s/ksub_platinu_bundle_1-2_copy.jpg",
+        "market": "en-US",
+        "price": "37.95",
+        "sku": "KBOX-PLATINUM-SUBOX-BUNDLE",
         "title": "Petite Solitaire Engagement Ring",
-        "variants": [
+        "uii": "KBOX-PLATINUM-SUBOX-BUNDLE",
+        "url": "http://www.myfreedomsmokes.com/shop-by-brand/kangertech/ksub-platinum-bundle.html"
+    }
+}
+```
+
+
+[ A product with variants ]
+
+```json
+{
+    "datetime": "2016-01-23T22:49:05+00:00",
+    "userid": "d61b53283d19956d60a6fa",
+    "event_type": "pageview",
+    "properties":
+    {
+        "currency": "USD",
+        "market": "en-US",
+        "title": "Petite Solitaire Engagement Ring",
+        "variants":
+        [
             {
-                "currency": "USD",
-                "market": "en-US",
                 "price": "830",
                 "sku": "19010",
                 "image_url": "http://img.bluenile.com/is/image/bluenile/-petite-solitaire-ring-platinum-/setting_template_main?$phab_detailmain$&$diam_shape=is{bluenile/main_RD_standard_100}&$diam_position=0,50&$ring_position=0,0&$ring_sku=is{bluenile/19010_setmain}",
@@ -233,8 +309,6 @@ Example of a product detail page view log :
                 }
             },
             {
-                "currency": "USD",
-                "market": "en-US",
                 "price": "690",
                 "sku": "19287",
                 "image_url": "http://img.bluenile.com/is/image/bluenile/-petite-solitaire-ring-platinum-/setting_template_main?$phab_detailmain$&$diam_shape=is{bluenile/main_RD_standard_100}&$diam_position=0,50&$ring_position=0,0&$ring_sku=is{bluenile/19010_setmain}",
@@ -246,50 +320,301 @@ Example of a product detail page view log :
         ]
     }
 }
-
 ```
+
+[ A product with options ]
+
 ```json
 {
     "datetime": "2016-01-23T22:49:05+00:00",
     "userid": "d61b53283d19956d60a6fa",
-    "event_type": "page_view",
-    "properties": {
-        "price": "23.99",
-        "title": "Adrafinil Capsules",
-        "uii": "ANDRAFINIL-CAPSULES-30",
-        "options": [
+    "event_type": "pageview",
+    "properties":
+    {
+        "price": "118.80",
+        "catalog_discount": "11.88",
+        "options":
+        [
             {
-                "type": "Size",
+                "type": "Colors",
                 "values": [
-                    "15 Grams",
-                    "30 Grams"
+                    "Navy",
+                    "Black",
+                    "Gray"
                 ]
             }
         ],
-        "url": "http://www.powdercity.com/products/adrafinil-capsules",
-        "sku: "ANDRAFINIL-CAPSULES-30",
+        "sku": "BEST-TRAVEL-PANTS-GRAY",
+        "uii": "80192301293",
+        "url": "https://www.betabrand.com/category/favorites/mens-gray-wrinkle-resistant-best-travel-pants.html",
+        "title": "Best Travel Pants (Gray)"
+    }
+}
+```
+
+---
+
+##### Catalog Page View
+
+This event occurs when a user views a page that contains a list / matrix of items as small cells, possibly paged, for any specific
+category or search result. For this event type, event_specific_fields is defined as follows :
+
+```json
+{
+    "categories": $categories,
+    "currency": $currency,
+    "market": $market,
+    "products": $products
+}
+```
+
+__products__ is an array of product information in this catalog view, which is defined as follows :
+
+```json
+[
+    {
+        "catalog_discount": $catalog_discount,
+        "image_url": $image_url,
+        "price": $price,
+        "sku": $sku,
+        "title": $title,
+        "uii": $uii
+    }    
+]
+```
+
+where
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+
+
+---
+
+##### Cart Page View
+
+When a user visits a cart view page, which shows a list of items in the shopping cart, a cart log must be sent. *Note that a cart page view is different from an add to cart event log, which is sent when a user takes an action to add item to a cart.
+
+Format of event\_specific\_fields is defined as follows :
+
+```json
+{
+    "cart": {
+        "currency": $currency,
+        "items": $items,
+        "market": $market,
+        "total": $total,
+        "total_discount": $total_discount
     }
 }
 
 ```
 
-[ A product with variants ]
+__items__ is a list of products added to cart, which is defined as follows :
 
-##### catalog page views
+```json
+[
+    {
+        "cart_discount": $cart_discount,
+        "catalog_discount": $catalog_discount,
+        "options": $options,
+        "price": $price,
+        "quantity": $quantity,
+        "sku": $sku,
+        "title": $title,
+        "uii": $uii,
+        "url": $url
+    },
+    ...
+]
+```
 
 | Field | Description | Required |
 |-------------:|:-------------|:-------------|
-| catalogs
+| options | chosen options for an added item, which is different from options in product detail pages, where options contain _all_ possible values each option can take. |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+| quantity | an integer value that contains the purchase count of this item |
+
+---
+
+##### Thank You (Checkout) Page View
+
+Most shopping sites either forwards users to their payment page or an associated external payment page, e.g. Paypal checkout page.
+After payments are made successfully, users are redirected to a Thank You page, which often contains information about the purchase,
+e.g. order ID, list of items purchased, etc., in addition to a simple confirmation note such as "Thank You" message.
+
+This event occurs when a user reaches Thank You pages. For this event type, event_specific_fields is defined as follows :
+
+```json
+{
+    "checkout": {
+        "currency": $currency,
+        "items": $items,
+        "market": $market,
+        "order_id": $order_id,
+        "shipping": $shipping,
+        "tax": $tax,
+        "total": $total,
+        "total_discount": $total_discount
+    }
+}
+```
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| order_id | a string that is uniquely identifies this checkout | Yes |
+| shipping | shipping method. See below for more details. | No |
+| tax | total tax applied. | No |
+
+__items__ is a list of products purchased, which is defined as follows :
+
+```json
+[
+    {
+        "cart_discount": $cart_discount,
+        "catalog_discount": $catalog_discount,
+        "options": $options,
+        "price": $price,
+        "quantity": $quantity,
+        "sku": $sku,
+        "title": $title,
+        "uii": $uii
+    },
+    ...
+]
+```
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| options | chosen options for an added item, which is different from options in product detail pages, where options contain _all_ possible values each option can take. | No |
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+| quantity | an integer value that contains the purchase count of this item | Yes |
+
+__shipping__ is defined as follows :
+
+
+```json
+{
+    "option": $option,
+    "cost": $cost
+}
+```
+
+where
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| option | string containing the shipping option, e.g. Fast (3 Days), Standard (5-7 Days), etc. | Yes |
+| cost | the shipping cost. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+
+
+---
+
+##### Search Result Page View
+
+This event occurs when users view search results for items after issueing a search using fields like keywords or options.
+This is very similar to a cart page view event except that it is associated with a search, rather than a specific set of
+categories.
+
+For this event type, event\_specific\_fields is defined as follows :
+
+```json
+{
+    "currency": $currency,
+    "market": $market,
+    "query": $query,
+    "products": $products
+}
+```
+
+__query_parameter__ is defined as an [HTTP query string](https://en.wikipedia.org/wiki/Query_string) containing query parameters
+used in the search. Note that this does not contain the host and domain names.
+
+__products__ is an array of product information in this catalog view, which is defined as follows :
+
+```json
+[
+    {
+        "catalog_discount": $catalog_discount,
+        "image_url": $image_url,
+        "price": $price,
+        "sku": $sku,
+        "title": $title,
+        "uii": $uii
+    }    
+]
+```
+
+where
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| price | price, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
+
+
+---
+
+##### Checkout
+
+This event occurs when items are _actually_ purchased. This therefore is a log that gets sent not on a "page load" event, but
+a successful completion of "purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making
+payments.
+
+__IMPORTANT__ Purchase data can be sent at this type of event OR at Thank You (Checkout) page view event, depending on 
+
+Information that could be in event_specific_fields is almost identical to that of 'Thank You' (Checkout) page views. If they do
+have identical 
+
+```json
+{
+    "checkout": {
+        "currency": $currency,
+        "items": $items,
+        "market": $market,
+        "order_id": $order_id,
+        "shipping": $shipping,
+        "tax": $tax,
+        "total": $total,
+        "total_discount": $total_discount
+    }
+}
+```
+
+| Field | Description | Required |
+|-------------:|:-------------|:-------------|
+| order_id | a string that is uniquely identifies this checkout | Yes |
+| shipping | shipping method. See below for more details. | No |
+| tax | total tax applied. | No |
+
+__items__ is a list of products purchased, which is defined as follows :
+
+```json
+[
+    {
+        "cart_discount": $cart_discount,
+        "catalog_discount": $catalog_discount,
+        "options": $options,
+        "price": $price,
+        "quantity": $quantity,
+        "sku": $sku,
+        "title": $title,
+        "uii": $uii
+    },
+    ...
+]
+```
+
 
 ### Attributes
 
 | Field | Description | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|
-| __title__ | title of the product. | Yes | Phoenix Dan Cong |
-| __sku__ | SKU of product. | Yes | K-MCRW40 |
-| __datetime__ | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
-| __duration__ | an integer that indicates the number of seconds in the aggregation period. | Yes | 86400 |
-| __price__ | price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. | Yes | 321.20 or 1,234.56 |
+| title | title of the product. | Yes | Phoenix Dan Cong |
+| sku | SKU of product. | Yes | K-MCRW40 |
+| datetime | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
+| duration | an integer that indicates the number of seconds in the aggregation period. | Yes | 86400 |
+| price | price represented to user, a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. This is usually a price after subtracting catalog discount. | Yes | 321.20 or 1,234.56 |
 | catalog_discount | discount publicly displayed and applied automatically. | No | 1.99 |
 | cart_discount | discount applied only when certain action is taken on purchased items, e.g. entering coupon codes., a string value with no currency symbol, but possibly with digit separators e.g. ',' or '.', etc. | No | 5.99 |
 | currency | an optional three capital letter currency code (ISO 4217), default = “USD”. | No | USD |
@@ -307,8 +632,8 @@ Example of a product detail page view log :
 
 | Field | Description | Required | Example |
 | -------------: |:------------- |:------------- |:------------- |
-| __title__ | title of the product | Yes | Phoenix Dan Cong |
-| __sku__ | SKU of product. | Yes | K-MCRW40 |
+| title | title of the product | Yes | Phoenix Dan Cong |
+| sku | SKU of product. | Yes | K-MCRW40 |
 | categories | a list of categories name(s) | No | "Home > Groceries > Vegetables > Organic" will be ```Home|Groceries|Vegetables|Organic``` in CSV (with '\|' escaped if part of category name) or ```["Home", "Groceries", "Vegetables", "Organic"]``` in JSON |
 | image_url | a URL of the thumbnail image of this product. | No | https://101vape.com/3639-large_default/fruit-whip-by-kilo-e-liquids.jpg |
 | market | an optional string, which is a concatenation of two letter language code (ISO 639-1) and two capital letter country code (ISO 3166-1 alpha-2), default = “en-US”. | No | en-US |
