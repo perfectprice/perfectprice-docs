@@ -561,8 +561,6 @@ This event occurs when items are _actually_ purchased. This therefore is a log t
 a successful completion of "purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making
 payments.
 
-__IMPORTANT__ Purchase data can be sent at this type of event OR at Thank You (Checkout) page view event, depending on 
-
 Information that could be in event_specific_fields is almost identical to that of 'Thank You' (Checkout) page views. If they do
 have identical 
 
@@ -604,6 +602,21 @@ __items__ is a list of products purchased, which is defined as follows :
     ...
 ]
 ```
+
+##### ___IMPORTANT NOTE ON CHECKOUTS vs. THANK YOU PAGE VIEWS___
+
+> Purchase data can be sent at a __checkout__ event OR at a Thank You (Checkout) page view event, depending on how the purchase
+flow is defined, and what type of information is available at each page and moment. For our analysis, it is critical that we
+do not double count purchases, which will affect not only basic metrics such as purchase counts, CVRs, revenues, margins, but
+also all related subsequent performance analysis such as promotion effectiveness, category analysis, etc.
+> 
+> Depending on the availability of information about purchased items on __checkout__ vs. __thank you__ pageview logs, provide
+> purchase information according to the following scenarios :
+> 
+> | Checkout Has Purchase Info? | Yes | No |
+> |-------------:|:-------------|:-------------|
+> | __Solution__ | Send Checkout Log | Send Thank You Log |   |
+
 
 
 ### Attributes
