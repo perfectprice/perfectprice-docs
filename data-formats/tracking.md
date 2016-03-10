@@ -391,7 +391,6 @@ __items__ is defined as follows :
 ```json
 [
     {
-        "added": true
         "cart_discount": $cart_discount,
         "catalog_discount": $catalog_discount,
         "options": $options,
@@ -408,7 +407,6 @@ where
 
 | Field | Description |
 | -------------: |:------------- |
-| added | an optional Boolean value which must be set to true if this item is added in this event, default = false. |
 | price | price, __after__ any type of discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 
 ##### OTHER Page
@@ -417,18 +415,21 @@ There is no specific fields needed for this category of page logs. In this case,
 
 ```json
 {
-    "meta": $meta_og_properties
+    "page": {
+        "meta": $meta_og_properties
+    },
+    "type": "pageview"
 }
 ```
-
-### 2.2 Logs from Checkout Events
-When an item is *actually* purchased, this log must be sent. This therefore is  a log that gets sent not on a "page load" event, but a successful completion of "purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making payments.
 
-In this example, page\_specific\_data is in red below :
+### 2.2 Logs from Checkout Events
+This logs must be sent when an item is *actually* purchased. This is therefore a log that gets sent not on a "page load" event, but a successful completion of
+"purchase", e.g. finishing placing orders, returning from Stripe or Paypal checkout page after making payments.
+
+In this example, checkout data is defined defined as follows :
 
 ```json
 {
-    "id": $company_hash,
     "checkout": {
         "items": $items,
         "shipping": $shipping,
@@ -437,7 +438,8 @@ In this example, page\_specific\_data is in red below :
         "total_discount": $total_discount,
         "currency": $currency,
         "market": $market
-    }
+    },
+    "type": "checkout"
 }
 ```
 
@@ -490,7 +492,55 @@ where
 | cost | the shipping cost. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
 
 
-### 2.3 Common Fields
+### 2.3 Logs from Add To Cart Events
+
+This log is sent when an item is added to cart or basket. 
+
+Format of add to cart data is defined as follows :
+
+| Field | Description |
+| -------------: |:------------- |
+| added | an optional Boolean value which must be set to true if this item is added in this event, default = false. |
+
+```json
+{
+    "add_to_cart": {
+        "item": $item,
+        "currency": $currency,
+        "market": $market
+    },
+    "type": "add_to_cart"
+}
+```
+
+where
+
+| Field | Description |
+| -------------: |:------------- |
+| item | an item added to cart. |
+
+__item__ is defined as follows :
+
+```json
+{
+    "cart_discount": $cart_discount,
+    "catalog_discount": $catalog_discount,
+    "options": $options,
+    "price": $price,
+    "quantity": $quantity,
+    "sku" : $sku,
+    "title": $title,
+    "uii": $uii
+}
+```
+
+where
+        
+| Field | Description |
+| -------------: |:------------- |
+| price | price, __after__ any type of discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ |
+
+### 2.4 Common Fields
 
 
 | Field | Description |
