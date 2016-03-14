@@ -432,6 +432,7 @@ In this example, checkout data is defined defined as follows :
 {
     "checkout": {
         "items": $items,
+        "order_id": $order_id,
         "shipping": $shipping,
         "tax": $tax,
         "total": $total,
@@ -448,6 +449,7 @@ where
 | Field | Description |
 | -------------: |:------------- |
 | items | a list of items purchased. |
+| order_id | a string that is uniquely identifies this checkout |
 | shipping | shipping method. See below for more details. |
 | tax | total tax applied. |
 
