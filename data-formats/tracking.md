@@ -382,7 +382,7 @@ Format of page\_specific\_data and type\_of\_log. \*Note that other common field
         "total": $total,
         "total_discount": $total_discount
     },
-    "type": "add_to_cart"
+    "type": "cart"
 }
 ```
 
