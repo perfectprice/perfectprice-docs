@@ -6,15 +6,17 @@ This document covers data coming __into__ Perfect Price. This applies (1) when y
 
 Data will power the AI models as well as dashboards, analysis and other big data visiualization tools for your team (and internal Perfect Price data scientists) to understand and manage price, utilization, profit and revenue. 
 
+We are __sometimes__ able to customize various data structures or import your data in the format you can easily export it in, and transform it into the format we need. So please ask us if your data does not line up perfectly with our formats! We don't expect it to. 
+
 ### 2 Architecture Overview
 
-Our system replicates data in a hadoop cluster in the cloud, in JSON. Much of this is then indexed into more accessible database formats (SQL, etc.) for charting, modeling, or other purposes. Wherever possible we do all computations on the raw data, rather than importing aggregated data. 
+Our system stores data in a hadoop cluster in the cloud, in [JSON](https://en.wikipedia.org/wiki/JSON). This is then stored and used for charting, modeling, or other purposes. Wherever possible we do all computations on the raw data, rather than importing aggregated data. 
 
-Models are typically run daily, with burst or surge models run intraday (up to every 5 minutes). The more rapidly we receive data updates from your system, the more responsive and "human like" the AI can be. 
+Models are typically run daily, with burst or surge models run intraday (up to every 5 minutes). The more rapidly we receive data updates from your system, the more responsive and "human like" the AI can be. However, we have flexibility around frequency of updates, and not everything needs to be updated at high frequency. 
 
-Please do *not* send personally identifiable information (PII) such as email, real name, phone numbers, etc. Instead please send a hash (SHA-1) that is consistent so that we can, if necessary, track a customer over time without PII.
+#### 2.1 Data categories
 
-Data is broken into the following categories:
+The broad categories of data we need are as follows:
 
 | Type | Description | Can be manually updated? | Can be batch updated? |
 |-------------:|:-------------|:-------------|:-------------|
@@ -25,7 +27,11 @@ Data is broken into the following categories:
 | Cost data | Any model you may already have on operating costs for optimizations | Yes | Yes |
 | Market price data | "Shopped" data on competitor prices, historical or going forward | No | Historical |  
 
-We will discuss each category, the required format, and automation. 
+We will discuss each category and the required format below. Remember, we can help get the data into the right format even if you cannot.
+
+#### 2.2 Note on PII
+
+Please do *not* send personally identifiable information (PII) such as email, real name, phone numbers, etc. Customer specific data needs to be either hashed (using [SHA-1](https://en.wikipedia.org/wiki/SHA-1) for example) or not sent at all. 
 
 ### 3 Formats
 
@@ -72,7 +78,6 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 | is\_available | Whether the car is currently available for rent | boolean | No | TRUE |
 | status | Whether the car on rent, on repair, etc. | string | No | on_rent |
 | air\_conditioner | Whether car has air conditioner/refrigeration| string | No | TRUE |
-| model\_lock ...  | MCAR FIELD  DO WE NEED? | | | |
 | bluetooth | Whether car has bluetooth | | | |
 | is\_autonomous| Whether car is autonomous capable | boolean | No, default is FALSE | TRUE |
 | autonomous\_level | Whether car is autonomous capable and if so what level, 0-5 | integer | No, default is 0 | 5 |
@@ -154,6 +159,7 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 | prepaid\_amount | Amount of nonrefundable prepaid payment | No | 13400 | 
 | refundable | Whether or not the amount paid is refundable | integer | No | TRUE | 
 | currency | Currency for all revenue and rate amounts | string | No | USD | 
+| customer\_id | Unique identifier for customer, possibly a hashed email address, that can be joined with other data to inform segmentation, etc. | string | No | 2k31j4lkhago9h08h34 |
 
 #### 4.6 Rentals (or Contracts)
 
@@ -177,10 +183,13 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 | prepaid\_amount | Amount of nonrefundable prepaid payment | No | 13400 | 
 | refundable | Whether or not the amount paid is refundable | integer | No | TRUE | 
 | currency | Currency for all revenue and rate amounts | string | No | USD | 
+| customer\_id | Unique identifier for customer, possibly a hashed email address, that can be joined with other data to inform segmentation, etc. | string | No | 2k31j4lkhago9h08h34 |
 
 #### 4.7. Looks or pageviews
 
-An event log is in [JSON](https://en.wikipedia.org/wiki/JSON) format that contains common fields and event
+When a user views a booking page, or you get a request from a GDS or online booking tool for a price quote, knowing that is important data in determining whether there is demand for a particular vehicle–that you're getting or not getting. 
+
+These are event logs and we receive them in [JSON](https://en.wikipedia.org/wiki/JSON) format that contains common fields and event
 type specific fields in the following format :
 
 ```json
@@ -193,38 +202,17 @@ type specific fields in the following format :
 | Field name |  Description | Type | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|:-------------|
 | id | unique id of event, joinable with other tables | string | Yes | 32lkjghew2 |
-| type | type of view, that is request from GDS or webpage visit | string | Yes | pageview |
-| time\_stamp | Time this happeend in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| datetime | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | string | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
+| event\_type | type of view, that is request from GDS or webpage visit | string | Yes | 'sabre', 'worldspan', 'pageview', etc. |
 | car\_classes | car classes viewed or in view if multiple for this event | string - array | Yes | EXAMPLE |
-
-
-| Field | Description |
-|-------------:|:-------------|
-| common_fields| fields that are common to any event log |
-| event\_specific\_fields | fields that vary depending on event type |
-
-#### 3.2 Common Fields
-
-REQUIRES UPDATING STILL 
-
-| Field | Description | Required | Example |
-|-------------:|:-------------|:-------------|:-------------|
-| datetime | date and time in [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) format. If only date is provided, then default value of time is 00:00:00. This is the beginning time of the aggregation period. | Yes | 2016-01-23T22:49:05+00:00 or 2016-01-23 |
-| event\_type | a string indicating the type of event | Yes | 'pageview', 'add\_to\_cart', etc. See below for more detail. |
-| user_id | an anonymized character string uniquely identifying a user, if applicable | Yes | 56d61b53283d19956d60a6fa |
-| version | a log version string in “integer.integer.integer” format, default = 1.0.0 | Yes | 1.0.0 |
-| event\_id | a string uniquely identifying an event | No | 837840745805772274 |
 
 Standard values of __event\_type__ for different types of events :
 
 | Type | Value |
 |-------------:|:-------------|
-| product detail | pageview |
-| catalog | pageview | 
-| cart | pageview |
-| search | pageview |
-| checkout | checkout |
-| add to cart | add\_to\_cart |
+| sabre | look from sabre gds |
+| worldspan | look from worldspan gds |
+| pageview | view of car on your website |
 
 For any other type of events, either use custom values for __event\_type__ as needed or do not add collect them.
 Some examples of custom __event\_type__ values includes :
@@ -232,7 +220,6 @@ Some examples of custom __event\_type__ values includes :
 | Type | Value |
 |-------------:|:-------------|
 | tapping a category | tap\_category |
-| view a billing page in app | view\_checkout\_billing\_step |
 
 An example of common fields :
 
