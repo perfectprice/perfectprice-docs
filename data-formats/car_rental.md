@@ -51,7 +51,7 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 #### 4.1 Vehicles
 
 | Field name |  Description | Type | Required | Example |
-|-------------:|:-------------|:-------------|:-------------|
+|-------------:|:-------------|:-------------|:-------------|:-------------|
 | vehicle\_unique\_id | Unique identifier for that vehicle | string | Yes | EXAMPLE |
 | vehicle\_name | Human readable name of vehicle | string | Yes | Sprinter Bench |
 | body\_style | Body style of vehicle | ??? | No | custom_van |
@@ -93,7 +93,7 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 #### 4.2 Rate codes
 
 | Field name |  Description | Type | Required | Example |
-|-------------:|:-------------|:-------------|:-------------|
+|-------------:|:-------------|:-------------|:-------------|:-------------|
 | rate\_code\_id | id for this rate code, in the event the code changes   
 | rate\_code | The rate code key in your system | string | Yes | EXAMPLE |
 | lor | Length of rent | integer | Yes | 3 | 
@@ -106,7 +106,7 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 
 
 | Field name |  Description | Type | Required | Example |
-|-------------:|:-------------|:-------------|:-------------|
+|-------------:|:-------------|:-------------|:-------------|:-------------|
 | car\_class\_id | id for this car class, in the event the code changes | string | Yes | 3205ofaiu3029 |
 | car\_class | The rate code key in your system | string | Yes | EXAMPLE |
 | lor | Length of rents available for this car class | string | Yes | 3 | 
@@ -119,7 +119,7 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 #### 4.4 Locations
 
 | Field name |  Description | Type | Required | Example |
-|-------------:|:-------------|:-------------|:-------------|
+|-------------:|:-------------|:-------------|:-------------|:-------------|
 | location\_id | id of location | string | Yes | 32lkjghew2 |
 | location\_name | name of location | string | Yes | San Francisco Airport|
 | location\_code | code of location if applicable | string | No | SFO | 
@@ -129,7 +129,7 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 | state | State or province of location | string | No | CA |
 | country | Country of location | string | No | USA | 
 | postal code | Postal code of location | string | No | 94101 |
-| latlong | String expression of lat, long of location | string in ISO 6709 format | No |  _+40.6894-074.0447_/ |
+| latlong | String expression of lat, long of location | string in [ISO 6709](https://en.wikipedia.org/wiki/ISO_6709) format | No |  _+40.6894-074.0447_/ |
 | airport | Airport code associated with location if an airport location | string | No | SFO |
 | is\_deleted | Whether the location is deleted/no longer a location | boolean | No | FALSE |
 | ota\_code | Location code used by online travel agencies or GDS systems | string | No | EXAMPLE |
