@@ -1,6 +1,6 @@
 # Car rental raw data
 
-### 1. Introduction
+### 1 Introduction
 
 This document covers data coming __into__ Perfect Price. This applies (1) when you are getting set up with Perfect Price and (2) on an ongoing basis, so the AI can constantly learn from experience and react to market changes. 
 
@@ -135,13 +135,50 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 | ota\_code | Location code used by online travel agencies or GDS systems | string | No | EXAMPLE |
 
 #### 4.5 Reservations (or Bookings)
-
-
+| Field name |  Description | Type | Required | Example |
+|-------------:|:-------------|:-------------|:-------------|:-------------|
+| reservation\_id | unique id of reservation, joinable with other tables | string | Yes | 32lkjghew2 |
+| created\_time | Time and date reservation was created in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| last\_modified\_time | Time and date reservation was last modified in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| pickup\_time | Time and date vehicle will be picked up in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| pickup\_location | Location vehicle will be picked up at, should be linked to your Locations | string | Yes | SFO |
+| dropoff\_time | Time and date vehicle will be dropped off in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| dropoff\_location | Location vehicle will be dropped off at, should be linked to your Locations | string | Yes | LAX |
+| rate\_codes | Array of rate codes for reservation, must be an ID of one of your rate code(s) | string | No | CCAR_1_day, CCAR_1_week |
+| car\_class | Car or vehicle class associated with reservatoin, must be an id of one of your car classes | string | No | BMW_Mini |
+| total\_amount | Total amount of booking cost in cents | integer | No | 13400 |
+| fees\_amount | Array of name and amount of tax or fee for each tax or fee charged | string | No | EXAMPLE |
+| ancillary\_services | Array of ancillary services and charges for those services | string | No | EXAMPLE |
+| ancillary\_amount | Cost of ancillary charges in cents | integer | No | 13400 |
+| deposit\_amount | Amount of deposit in cents | integer | No | 10000 | 
+| prepaid\_amount | Amount of nonrefundable prepaid payment | No | 13400 | 
+| refundable | Whether or not the amount paid is refundable | integer | No | TRUE | 
+| currency | Currency for all revenue and rate amounts | string | No | USD | 
 
 #### 4.6 Rentals (or Contracts)
 
+| Field name |  Description | Type | Required | Example |
+|-------------:|:-------------|:-------------|:-------------|:-------------|
+| reservation\_id | unique id of reservation, joinable with other tables | string | Yes | 32lkjghew2 |
+| rental\_id | unique id of rental or contract, joinable with other tables | string | Yes | 32lkjghew2 |
+| created\_time | Time and date rental was created in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| last\_modified\_time | Time and date rental was last modified in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| pickup\_time | Time and date vehicle was picked up in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| pickup\_location | Location vehicle was picked up at, should be linked to your Locations | string | Yes | SFO |
+| dropoff\_time | Time and date vehicle was or will be dropped off in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| dropoff\_location | Location vehicle will be dropped off, should be linked to your Locations | string | Yes | LAX |
+| rate\_codes | Array of rate codes for reservation, must be an ID of one of your rate code(s) | string | No | CCAR_1_day, CCAR_1_week |
+| car\_class | Car or vehicle class associated with reservatoin, must be an id of one of your car classes | string | No | BMW_Mini |
+| total\_amount | Total amount of cost in cents | integer | No | 13400 |
+| fees\_amount | Array of name and amount of tax or fee for each tax or fee charged | string | No | EXAMPLE |
+| ancillary\_services | Array of ancillary services and charges for those services | string | No | EXAMPLE |
+| ancillary\_amount | Cost of ancillary charges in cents | integer | No | 13400 |
+| deposit\_amount | Amount of deposit in cents | integer | No | 10000 | 
+| prepaid\_amount | Amount of nonrefundable prepaid payment | No | 13400 | 
+| refundable | Whether or not the amount paid is refundable | integer | No | TRUE | 
+| currency | Currency for all revenue and rate amounts | string | No | USD | 
 
-#### 4.7. Looks or pageviews ??
+#### 4.7. Looks or pageviews
 
 An event log is in [JSON](https://en.wikipedia.org/wiki/JSON) format that contains common fields and event
 type specific fields in the following format :
@@ -153,12 +190,22 @@ type specific fields in the following format :
 }
 ```
 
+| Field name |  Description | Type | Required | Example |
+|-------------:|:-------------|:-------------|:-------------|:-------------|
+| id | unique id of event, joinable with other tables | string | Yes | 32lkjghew2 |
+| type | type of view, that is request from GDS or webpage visit | string | Yes | pageview |
+| time\_stamp | Time this happeend in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| car\_classes | car classes viewed or in view if multiple for this event | string - array | Yes | EXAMPLE |
+
+
 | Field | Description |
 |-------------:|:-------------|
 | common_fields| fields that are common to any event log |
 | event\_specific\_fields | fields that vary depending on event type |
 
 #### 3.2 Common Fields
+
+REQUIRES UPDATING STILL 
 
 | Field | Description | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|
