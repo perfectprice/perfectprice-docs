@@ -143,9 +143,6 @@ We need to estimate demand for each car, rate code or vehicle class to optimize.
 
 #### 4.7. Looks or pageviews ??
 
-
-#### 3.1 Basic Format
-
 An event log is in [JSON](https://en.wikipedia.org/wiki/JSON) format that contains common fields and event
 type specific fields in the following format :
 
@@ -300,62 +297,6 @@ An example of options :
             "40"
         ],
         "unit": "inch"
-    },
-    {
-        "type": "Size",
-        "values": [
-            "S",
-            "M",
-            "L",
-            "XL"
-        ]
-    }
-]
-```
-
-\* Note that options sent in for product detail page view events includes ALL possible values each option can take, not a particular choice uses chose.
-
-Field "variants" is defined as follows :
-
-```json
-[
-    {
-        "availability": $availability,
-        "catalog_discount": $catalog_discount,
-        "image_url": $image_url,
-        "price": $price,
-        "properties": $properties,
-        "sku": $sku,
-        "title": $full_variant_title,
-        "uii": $uii,
-        "variant": $variant_title
-    },
-    ...
-]
-```
-where
-
-| Field | Description | Required |
-| -------------:|:-------------|:-------------|
-| availability | a boolean value, True if this variant is displayed as available, False otherwise | Yes, if there are no variants. |
-| catalog_discount | discount publicly announced and applied automatically to this variant. This may not be directly what's displayed to user, e.g. original price before discount shown along with discounted price, or sale %, etc. In such case, this value must be computed from those values. | No |
-| image_url | a URL of the thumbnail image of this variant. | No |
-| price | price of this variant, __after__ catalog discount if applicable. __No currency symbol. Represented as string type with digit separators, e.g. ',' or '.', etc.__ | Yes |
-| properties | a dictionary of key value pairs that contain static information about the variant, e.g. brand, width, etc. | No |
-| sku | SKU of product. | No |
-| full_variant_title | product-level title + ' ' + variant-level title, e.g. 'Adrafinil Capsules' + ' ' + '30 CAPSULES' == 'Adrafinil Capsules 30 CAPSULES' | Yes |
-| uii | a string that uniquely identifies a variant, e.g. stock number, SKU, UPC, etc. | Yes |
-| url | URL address of variant page user visited. Only necessary when a separate page exists for this variant in addition to a main product page | Yes, if a web page view log. |
-| variant_title | variant-level title, e.g. '30 CAPSULES' | Yes |
-
-\* In most cases, variants are presented to users altogether in a single page view. All such variants in a single page must be
-stored in the same event log.
-
-\* An _option_ is different from a _property_ in that option is for which value users have freedom to choose among a few possibilities,
-e.g. size of T-shirts, while a property is static to a product such that users do not have freedom choose its value, e.g. size, color,
-or weight of diamonds.
-
-\* Even if a product comes in variants, a product-level _uii_ must be provided, by which variants for this product could be grouped.
 
 ##### Examples
 
