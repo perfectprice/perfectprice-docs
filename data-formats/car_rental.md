@@ -17,7 +17,7 @@ Please do *not* send personally identifiable information (PII) such as email, re
 Data is broken into the following categories:
 
 | Type | Description | Can be manually updated? | Can be batch updated? |
-|-------------:|:-------------|:-------------|
+|-------------:|:-------------|:-------------|:-------------|
 | Vehicle Data | Data on each vehicle in your fleet used for availability, location and cost calculations | No | Yes |
 | Location data | Data on each location or virtual location, used for cost calculations | Yes | Yes |
 | Bookings | Raw bookings in bulk or as they come in | No | Historical |
