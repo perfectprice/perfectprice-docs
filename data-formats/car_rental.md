@@ -87,6 +87,7 @@ We need comprehensive information across several categories, which follow. Note 
 | make | Brand or make of car | String | Yes | Mercedes |
 | model | Manufacturer name of car | String | Yes | Sprinter |
 | year  | Model year of car | integer | Yes | 2016|
+| color | Exterior color of car in cents | integer | Yes | Black |
 | acquisition\_cost | Full amount paid for vehicle in cents, including any taxes etc. For cost and depreciation calculations | integer | Yes for optimization | 1500000 |
 | acquisition\_cost\_currency | Currency of acquisition cost | string | USD if not specified | CAD |
 | disposal\_value | Net amount received for vehicle if sold | integer | No | 1358900 |
@@ -101,8 +102,7 @@ We need comprehensive information across several categories, which follow. Note 
 | status | Whether the car on rent, on repair, etc. | string | No | on_rent |
 | air\_conditioner | Whether car has air conditioner/refrigeration| string | No | TRUE |
 | bluetooth | Whether car has bluetooth | | | |
-| is\_autonomous| Whether car is autonomous capable | boolean | No, default is FALSE | TRUE |
-| autonomous\_level | Whether car is autonomous capable and if so what level, 0-5 | integer | No, default is 0 | 5 |
+| autonomous\_level | Whether car is autonomous capable and if so what [level, 0-5](https://en.wikipedia.org/wiki/Autonomous_car) | integer | No, default is 0 | 5 |
 | heated\_seats | Whether car has heated seats | string | No | Yes |
 | cooled\_seats | Whether car has cooled seats | string | No | Yes |
 | number\_of\_doors | How many doors on the car | string | No | 5 |
@@ -119,6 +119,8 @@ We need comprehensive information across several categories, which follow. Note 
 
 #### 4.2 Rate codes
 
+Rate codes can be manually configured with the proper inputs during setup and configuration, or imported programmatically. The id's must be used in other data sets (eg Bookings) that match. 
+
 | Field name |  Description | Type | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|:-------------|
 | rate\_code\_id | id for this rate code, in the event the code changes   
@@ -128,9 +130,11 @@ We need comprehensive information across several categories, which follow. Note 
 | default_price | The default price for this rate code, or the current price, in cents | Integer | No | 2000 |
 | default_price_currency | Currency for default price | string | No | USD |
 | vehicles | Array of vehcile IDs associated with this rate code at the current time | string | No | EXAMPLE |
+| dates | Array of tuples when rate code was in effect in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) If left blank then new rate code overwrites old rate code for future and past.| string | No | EXAMPLE |
 
 #### 4.3 Car Classes (Vehicle types)
 
+Car classes can be manually configured with the proper inputs during setup and configuration, or imported programmatically. The id's must be used in other data sets (eg Bookings) that match. 
 
 | Field name |  Description | Type | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|:-------------|
@@ -142,8 +146,9 @@ We need comprehensive information across several categories, which follow. Note 
 | default_price_currency | Currency for default price | string | No | USD |
 | vehicles | Array of vehcile IDs associated with this rate code at the current time | string | No | EXAMPLE |
 
-
 #### 4.4 Locations
+
+Locations can be manually configured with the proper inputs during setup and configuration, or imported programmatically. The id's must be used in other data sets (eg Bookings) that match. 
 
 | Field name |  Description | Type | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|:-------------|
@@ -156,12 +161,18 @@ We need comprehensive information across several categories, which follow. Note 
 | state | State or province of location | string | No | CA |
 | country | Country of location | string | No | USA | 
 | postal code | Postal code of location | string | No | 94101 |
-| latlong | String expression of lat, long of location | string in [ISO 6709](https://en.wikipedia.org/wiki/ISO_6709) format | No |  _+40.6894-074.0447_/ |
+| latlong | String expression of lat, long of location | string in [ISO 6709](https://en.wikipedia.org/wiki/ISO_6709) format | No |  \_+40.6894-074.0447\_/ |
 | airport | Airport code associated with location if an airport location | string | No | SFO |
 | is\_deleted | Whether the location is deleted/no longer a location | boolean | No | FALSE |
-| ota\_code | Location code used by online travel agencies or GDS systems | string | No | EXAMPLE |
+| ota\_code | Location code used by online travel agencies or GDS systems | string | No | SFO |
+| shuttle | Whether the location provides a shuttle from the Airport it is associated with | BOOLEAN | No | FALSE |
+| off\_airport | Whether the location is associated with an airport but is off-airport | BOOLEAN | No | FALSE |
+
 
 #### 4.5 Reservations (or Bookings)
+
+Reservations or bookings are confirmed requests for a car, which may or may not require prepayment or deposit. They may or may not chnage. The renter may or may not show up. If the renter shows up and picks up the car, this will result in a Rental (or contract, below). Much is unknown at the time of a reservation, which is fine. 
+
 | Field name |  Description | Type | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|:-------------|
 | reservation\_id | unique id of reservation, joinable with other tables | string | Yes | 32lkjghew2 |
@@ -172,18 +183,21 @@ We need comprehensive information across several categories, which follow. Note 
 | dropoff\_time | Time and date vehicle will be dropped off in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
 | dropoff\_location | Location vehicle will be dropped off at, should be linked to your Locations | string | Yes | LAX |
 | rate\_codes | Array of rate codes for reservation, must be an ID of one of your rate code(s) | string | No | CCAR_1_day, CCAR_1_week |
-| car\_class | Car or vehicle class associated with reservatoin, must be an id of one of your car classes | string | No | BMW_Mini |
+| car\_class | Car or vehicle class associated with reservatoin, must be joinable with one of your car classes, preferalby by car\_class\_id | string | No | EXAMPLE |
+| vehicle\_id | Vehicle assigned to this specific reservation | string, specific id from vehicles | No | 2345h2DAHE |  
 | total\_amount | Total amount of booking cost in cents | integer | No | 13400 |
 | fees\_amount | Array of name and amount of tax or fee for each tax or fee charged | string | No | EXAMPLE |
 | ancillary\_services | Array of ancillary services and charges for those services | string | No | EXAMPLE |
 | ancillary\_amount | Cost of ancillary charges in cents | integer | No | 13400 |
 | deposit\_amount | Amount of deposit in cents | integer | No | 10000 | 
 | prepaid\_amount | Amount of nonrefundable prepaid payment | No | 13400 | 
-| refundable | Whether or not the amount paid is refundable | integer | No | TRUE | 
+| refundable | Whether or not the prepayment or deposit amount paid is refundable | integer | No | TRUE | 
 | currency | Currency for all revenue and rate amounts | string | No | USD | 
 | customer\_id | Unique identifier for customer, possibly a hashed email address, that can be joined with other data to inform segmentation, etc. | string | No | 2k31j4lkhago9h08h34 |
 
 #### 4.6 Rentals (or Contracts)
+
+When a car is  picked up and, generally, when a contract is issued it becomes a rental. A rental can be open (ie, still out and on rent) or closed (the car has been picked up and returned). For rentals out on rent, they will simply be missing an actual dropoff time. 
 
 | Field name |  Description | Type | Required | Example |
 |-------------:|:-------------|:-------------|:-------------|:-------------|
@@ -193,10 +207,12 @@ We need comprehensive information across several categories, which follow. Note 
 | last\_modified\_time | Time and date rental was last modified in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
 | pickup\_time | Time and date vehicle was picked up in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
 | pickup\_location | Location vehicle was picked up at, should be linked to your Locations | string | Yes | SFO |
-| dropoff\_time | Time and date vehicle was or will be dropped off in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
+| dropoff\_time | Time and date vehicle will be dropped off in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string 
+| actual\_dropoff\_time | Time and date vehicle was actually dropped off in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) | string | Yes | 2017-04-13T22:00:20+00:00 |
 | dropoff\_location | Location vehicle will be dropped off, should be linked to your Locations | string | Yes | LAX |
 | rate\_codes | Array of rate codes for reservation, must be an ID of one of your rate code(s) | string | No | CCAR_1_day, CCAR_1_week |
-| car\_class | Car or vehicle class associated with reservatoin, must be an id of one of your car classes | string | No | BMW_Mini |
+| car\_classes | Car classes associated with reservation, must be an id of one of your car classes | string | No | BMW_Mini |
+| vehicle\_id | Vehicle assigned to this specific reservation | string, specific id from vehicles | No | 2345h2DAHE |  
 | total\_amount | Total amount of cost in cents | integer | No | 13400 |
 | fees\_amount | Array of name and amount of tax or fee for each tax or fee charged | string | No | EXAMPLE |
 | ancillary\_services | Array of ancillary services and charges for those services | string | No | EXAMPLE |
@@ -209,7 +225,7 @@ We need comprehensive information across several categories, which follow. Note 
 
 #### 4.7. Looks or pageviews
 
-When a user views a booking page, or you get a request from a GDS or online booking tool for a price quote, knowing that is important data in determining whether there is demand for a particular vehicle–that you're getting or not getting. 
+When a user views a booking page, or you get a request from a GDS or online booking tool for a price quote, knowing that is important data in determining whether there is demand for a particular vehicle. 
 
 These are event logs and we receive them in [JSON](https://en.wikipedia.org/wiki/JSON) format that contains common fields and event
 type specific fields in the following format :
@@ -253,25 +269,6 @@ An example of common fields :
     "properties": $event_specific_fields
 }
 ```
-
-#### 3.3 Event Specific Fields
-
-##### Variants vs. Options
-
-When a product is presented to users with properties that can take one or more than one among a variety of values,
-e.g. size 'Small' from a set of choices [ 'Small', 'Medium', 'Large' ], or color 'Red' among [ 'Blue', 'Green',
-'Purple', 'Red', 'White' ], etc., a particulr set of choices of those properties may result in changes in prices
-depending on the choice. For instance, a tea product may be sold in a 1oz tin can at $10.00 USD, or as a 20 sachet
-bags at $20.00 USD, or a T-shirt comes in different colors and sizes, while they all are sold at $15.00 USD.
-When a variation incurs change in price, each variation is called a __variant__, while if not, it is called an
-__option__. Distinguishing variants from options is important as our analysis is tightly coupled with prices.
-
-Following sections describe formats of varying event\_specific\_fields for different types of events, where
-definitions and examples are presented without common\_fields for simplicity of explanation. Certain non-required
-fields may be omitted if not available or applicable.
-
----
-
 ##### Product Detail Page View
 
 This event occurs when a user views a page that contains details about a single product, or a preview info of
