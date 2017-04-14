@@ -1,12 +1,12 @@
-# Car rental raw data
+# Car rental raw data standard format
 
 ### 1 Introduction
 
-This document covers data coming __into__ Perfect Price. This applies (1) when you are getting set up with Perfect Price and (2) on an ongoing basis, so the AI can constantly learn from experience and react to market changes. 
-
-Data will power the AI models as well as dashboards, analysis and other big data visiualization tools for your team (and internal Perfect Price data scientists) to understand and manage price, utilization, profit and revenue. 
+This document covers data coming __into__ Perfect Price. This applies both when you are getting set up with Perfect Price and on an ongoing basis, so the AI can constantly learn from experience and react to market changes. 
 
 We are __sometimes__ able to customize various data structures or import your data in the format you can easily export it in, and transform it into the format we need. So please ask us if your data does not line up perfectly with our formats! We don't expect it to. 
+
+It is __usually__ worthwhile to send us an export of data in the format you have easy access to. Sometimes we may be able to [transform](https://en.wikipedia.org/wiki/Extract,_transform,_load) it into the format we need more easily or reliably than your systems can. 
 
 ### 2 Architecture Overview
 
@@ -14,20 +14,22 @@ Our system stores data in a hadoop cluster in the cloud, in [JSON](https://en.wi
 
 Models are typically run daily, with burst or surge models run intraday (up to every 5 minutes). The more rapidly we receive data updates from your system, the more responsive and "human like" the AI can be. However, we have flexibility around frequency of updates, and not everything needs to be updated at high frequency. 
 
+We duplicate all data on our side. If you have a small data set and a data warehouse that allows it, we can re-read all data in for several years each time we run the model. This enables us to pull in updates that you may retroactively make to your data and include that auotmatically in our models. However that can be an expensive and inefficient process and therefore we can also simply pull and write new data, which is how most customers prefer to run the system. 
+
+Data on our system will persist if you change your rental management or reservation system, as it is in a standard format. 
+
 #### 2.1 Data categories
 
 The broad categories of data we need are as follows:
 
 | Type | Description | Can be manually updated? | Can be batch updated? |
 |-------------:|:-------------|:-------------|:-------------|
-| Vehicle Data | Data on each vehicle in your fleet used for availability, location and cost calculations | No | Yes |
-| Location data | Data on each location or virtual location, used for cost calculations | Yes | Yes |
+| Vehicles | Data on each vehicle in your fleet used for availability, location and cost calculations | No | Yes |
+| Locations | Data on each location or virtual location, used for cost calculations | Yes | Yes |
 | Bookings | Raw bookings in bulk or as they come in | No | Historical |
 | Rentals | Raw data on actual rentals (contracts) as they happen | No | Historical |
-| Cost data | Any model you may already have on operating costs for optimizations | Yes | Yes |
+| Costs | Any model you may already have on operating costs for optimizations, or raw data such as acquisition/disposal/mileage of vehicles, variable cost for pickup/delivery, or commissions by channel  | Yes | Yes |
 | Market price data | "Shopped" data on competitor prices, historical or going forward | No | Historical |  
-
-We will discuss each category and the required format below. Remember, we can help get the data into the right format even if you cannot.
 
 #### 2.2 Note on PII
 
@@ -35,24 +37,44 @@ Please do *not* send personally identifiable information (PII) such as email, re
 
 ### 3 Formats
 
+The data will end up in the below formats to be consumed and used by our AI. Some customizations are possible. Remember, we can help get the data into the right format even if your system cannot.
+
+#### 3.1 Historical exports
+
+Historical exports serve to either backfill months or years of data or to give Perfect Price's team a sample of data so we can provide better guidance in architecting a scalable, stable method of sending data. 
+
 For one time, historical exports, we can accept 3 formats:
 * JSON (preferred)
 * XML
 * CSV (best for direct SQL exports)
 
-Our system will map your fields to the fields that are expected. See below for required and optional fields. 
+If a CSV, our system will map your fields to the fields that are expected. This can be a more brittle method of data transfer and we recommenda against it for complex data structures or any data structure to be used on an ongoing basis that may change. 
 
-For ongoing updates, you can set up an API or webservice that we can query on a regular basis, or which pushes updates to our system when a change occurs. Changes include:
+#### 3.2 Ongoing updates
+
+For ongoing updates, we can accept the same 3 formats, with conditions:
+* JSON (preferred) - ideally, in API/webservice
+* XML - API/webservice preferred
+* CSV - Direct export or FTP dump.
+
+The ideal method is always an API or webservice to send us incremental data, or for us to query for data updated since the last query. This is less efficient than a 1-time data export, but a well architected API or Webservice could support large batch transfers. 
+
+Examples of when you would push new data to us, or what we would be querying to find updates for include:
 * new bookings (reservations)
-* new rentals or pickups
+* new rentals or pickups (pickups or contracts)
 * new returns
-* changes in availability of a car (recall, repair, delivery, acquisition, disposal, etc.)
+* changes in availability of a vehicle (recall, repair, delivery, acquisition, disposal, etc.)
+* vehicles added or removed to the system 
 
-Batch updates or individual updates are both ok. 
+Batch updates or individual updates are both ok. The closer to real time, the better the AI can react. 
 
 #### 4 Raw Data Requirements
 
-We need to estimate demand for each car, rate code or vehicle class to optimize. Therefore we need comprehensive information across several categories:
+The AI needs at a minimum the same information a human would look at, but it needs it to be accurate and complete. For example if you have a clever way of removing vehicles for repair by, say, setting up a rental for $0 to a John Repair, it will affect the AI (yes, true story!). 
+
+In all cases we __strongly prefer raw data__. That is, the actual transactions. It is easier and preferable for us to make computations on our side rather than work from already computed numbers. For example, giving us the start and end mileage on each reservation is much better than just giving an average mileage per rental across your entire fleet. Our system is capable of optimizing using mileage on a vehicle, day, day of week, month of year, and location basis in a way that humans cannot possibly achieve. 
+
+We need comprehensive information across several categories, which follow. Note that some information is duplicative or not required at all, but we include everything for comprehensiveness. Easier to set this up once than to have to go in and redo it.
 
 #### 4.1 Vehicles
 
