@@ -2,7 +2,9 @@
 
 ### 1 Introduction
 
-This document covers data coming __into__ Perfect Price. This applies both when you are getting set up with Perfect Price and on an ongoing basis, so the AI can constantly learn from experience and react to market changes. 
+This document covers booking (reservation) and rental data coming __into__ Perfect Price. This applies both when you are getting set up with Perfect Price and on an ongoing basis, so the AI can constantly learn from experience and react to market changes. 
+
+For market data (competitor prices, price shops, etc.) please see [the specifications for market data here](https://github.com/perfectprice/perfectprice-docs/blob/master/data-formats/competition.md). 
 
 We are __sometimes__ able to customize various data structures or import your data in the format you can easily export it in, and transform it into the format we need. So please ask us if your data does not line up perfectly with our formats! We don't expect it to. 
 
@@ -14,7 +16,7 @@ Our system stores data in a hadoop cluster in the cloud, in [JSON](https://en.wi
 
 Models are typically run daily, with burst or surge models run intraday (up to every 5 minutes). The more rapidly we receive data updates from your system, the more responsive and "human like" the AI can be. However, we have flexibility around frequency of updates, and not everything needs to be updated at high frequency. 
 
-We duplicate all data on our side. If you have a small data set and a data warehouse that allows it, we can re-read all data in for several years each time we run the model. This enables us to pull in updates that you may retroactively make to your data and include that auotmatically in our models. However that can be an expensive and inefficient process and therefore we can also simply pull and write new data, which is how most customers prefer to run the system. 
+We duplicate all data on our side. If you have a small data set and a data warehouse that allows it, we can re-read all data in for several years each time we run the model. This enables us to pull in updates that you may retroactively make to your data and include that auotmatically in our models. However that can be an expensive and inefficient process and therefore we can also simply pull and write new data, which is how most customers prefer to run the system. It is important to have well maintained ids so that, for example, if a booking is modified, we can update it on our side as well.
 
 #### 2.1 Data categories
 
