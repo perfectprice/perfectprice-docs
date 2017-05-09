@@ -80,7 +80,7 @@ We need comprehensive information across several categories, which follow. Note 
 |-------------:|:-------------|:-------------|:-------------|:-------------|
 | vehicle\_unique\_id | Unique identifier for that vehicle | string | Yes | EXAMPLE |
 | vehicle\_name | Human readable name of vehicle | string | Yes | Sprinter Bench |
-| body\_style | Body style of vehicle | ??? | No | custom_van |
+| body\_style | Body style of vehicle | string | No | custom_van |
 | car\_classes | Standardized 4- or 5-letter car classes vehicle is associated with can have multiple | string | No | XXAR,CCAR |
 | make | Brand or make of car | String | Yes | Mercedes |
 | model | Manufacturer name of car | String | Yes | Sprinter |
