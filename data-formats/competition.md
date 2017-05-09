@@ -24,7 +24,7 @@ The broad categories of data we need are as follows:
 
 | Type | Description |
 |-------------:|:-------------|
-| Market price data | "Shopped" data on competitor prices, historical or going forward |
+| Market Prices | "Shopped" data on competitor prices, historical or going forward |
 | Dimensions | Dimensional data used in market price data, e.g. vendor, rate, city codes, etc.  |
 
 #### 2.2 Note on PII
@@ -66,7 +66,7 @@ The closer to real time data gets transferred, the faster can our AI react.
 
 In all cases we strongly prefer data be as __raw__ as possible. That is, the actual shopped rates. It is easier and preferable for us to make computations on our side rather than work from already computed numbers. For example, giving us the specific rate for a certain reservation window, car type, dates, location, etc. is much better than just giving an average rate.
 
-For compactness and specificity, market rate data often contain dimensional fields such as vendor codes, SIPP, etc. For convenience and readability, it is helpful to convert such fields into human interpretable values. Dimensional data could be provided for this purpose, mostly once during setup, or rarely as they change.
+For compactness and specificity, market rate data often contain dimensional fields such as vendor codes, SIPP, etc. Dimensional data could be provided for convenience and human readability, mostly once during setup, or rarely as they change.
 
 #### 4.1 Market Prices
 
@@ -181,3 +181,67 @@ where $lor_unit is a string that takes one of the values :
 | week | A week. |
 | month | 30 days. |
 | year | A year. |
+
+
+#### 4.2 Dimensions
+
+A dimensional field is a field that takes one of a predefined list of possible values, e.g. day of week, month of year, SIPP, vendor code, currency, airport codes, etc. Using standardized coding system for dimensional fields results in compact and unambiguous data, while it is not human friendly.
+
+Dimensional data is a mapping of each dimensional value to a human readable descriptive piece of information. For instance, day of week dimension field could be defined as follows :
+
+```json
+{
+    "info":
+    {
+        "name": "Day of Week",
+    },
+    "values":
+    [
+        {
+            "key": 0,
+            "value": "Monday"
+        },
+        {
+            "key": 1,
+            "value": "Tuesday"
+        },
+        ...
+        {
+            "key": 6,
+            "value": "Sunday"
+        }
+    ]
+}
+```
+
+If ordering is necessary, each element of "values" could contain an integer "order" value, e.g. :
+
+```json
+{
+    "info":
+    {
+        "name": "Day of Week",
+    },
+    "values":
+    [
+        {
+            "key": 0,
+            "value": "Monday",
+            "order": 0
+        },
+        {
+            "key": 1,
+            "value": "Tuesday",
+            "order": 10
+        },
+        ...
+        {
+            "key": 6,
+            "value": "Sunday",
+            "order": 60
+        }
+    ]
+}
+```
+
+* Note that __all__ elements of "values" should have "order" if ordering is necessary, or __all__ must not have it. If "order" is specified to only partial elements, they are completely ignored, i.e. no == random ordering.
