@@ -4,7 +4,7 @@
 
 This document covers competitive rate data coming __into__ Perfect Price. This applies both when you are getting set up with Perfect Price and on an ongoing basis, so the AI can constantly learn from experience and react to market changes.
 
-We are __sometimes__ able to customize various data structures or import your data in the format you can easily export it in, and transform it into the format we need. So please ask us if your data does not line up perfectly with our formats! We don't expect it to.
+We are __sometimes__ able to customize various data structures or import your data in the format you can easily export it in, and transform it into the format we need. Please ask us if your data does not line up perfectly with our formats.
 
 It is __usually__ worthwhile to send us an export of data in the format you have easy access to. Sometimes we may be able to [transform](https://en.wikipedia.org/wiki/Extract,_transform,_load) it into the format we need more easily or reliably than your systems can.
 
@@ -12,13 +12,11 @@ It is __usually__ worthwhile to send us an export of data in the format you have
 
 Our system stores data in a Hadoop cluster in the cloud, in [JSON](https://en.wikipedia.org/wiki/JSON). This is then stored and used for charting, modeling, or other purposes. Wherever possible we do all computations on the raw data, rather than importing aggregated data.
 
-Models are typically run daily, with burst or surge models run intraday (up to every 5 minutes). The more rapidly we receive data updates from your system, the more responsive and "human like" the AI can be. However, we have flexibility around frequency of updates, and not everything needs to be updated at high frequency.
+Models are typically run daily, with burst or surge models run intraday (up to every 5 minutes). The more rapidly we receive data updates from your system, the more responsive and "human like" the AI can be. However, we have flexibility around frequency of updates, and not everything needs to be updated at high frequency. 
 
 We duplicate all data on our side. If you have a small data set and a data warehouse that allows it, we can re-read all data in for several years each time we run the model. This enables us to pull in updates that you may retroactively make to your data and include that auotmatically in our models. However that can be an expensive and inefficient process and therefore we can also simply pull and write new data, which is how most customers prefer to run the system.
 
-Data on our system will persist if you change your rental management or reservation system, as it is in a standard format.
-
-#### 2.1 Data Categories
+#### 2.1 Market Data Categories
 
 The broad categories of data we need are as follows:
 
@@ -29,7 +27,7 @@ The broad categories of data we need are as follows:
 
 #### 2.2 Note on PII
 
-Please do *not* send personally identifiable information (PII) such as email, real name, phone numbers, etc. Customer specific data needs to be either hashed (using [SHA-1](https://en.wikipedia.org/wiki/SHA-1) for example) or not sent at all.
+We do not expect or foresee any reason for a market data provider to include personally identifiable information (PII) in market data, but in the unlikely event any is comingled with market data, please do *not* send PII to our system. This includes email, real name, phone numbers, etc. Customer specific data needs to be either hashed (using [SHA-1](https://en.wikipedia.org/wiki/SHA-1) for example) or not sent at all.
 
 ### 3 Data Exports
 
@@ -44,7 +42,7 @@ For one time, historical exports, we can accept 3 formats:
 * XML
 * CSV (best for direct SQL exports)
 
-If a CSV, our system will map your fields to the fields that are expected. This can be a more brittle method of data transfer and we recommend against it for complex data structures or any data structure to be used on an ongoing basis that may change. Our most preferred data format is JSON for the compactness and the flexibility
+If a CSV, our system will map your fields to the fields that are expected. This can be a more brittle method of data transfer and we recommend against it for complex data structures or any data structure to be used on an ongoing basis that may change. Our most preferred data format is JSON for the compactness and the flexibility.
 
 #### 3.2 Incremental Data
 
@@ -60,7 +58,7 @@ Examples of what you would push to us, or what we would be querying for include:
 * new market (shopped) rates
 * updated dimensions, if any
 
-The closer to real time data gets transferred, the faster can our AI react.
+The closer to real time data gets transferred, the faster can our AI react. Again, there is a cost/benefit calculation that needs to be made here by the client. 
 
 #### 4 Data Formats
 
