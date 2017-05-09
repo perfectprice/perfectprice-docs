@@ -23,7 +23,7 @@ Data on our system will persist if you change your rental management or reservat
 The broad categories of data we need are as follows:
 
 | Type | Description |
-|-------------:|:-------------|:-------------|:-------------|
+|-------------:|:-------------|
 | Market price data | "Shopped" data on competitor prices, historical or going forward |
 | Dimensions | Dimensional data used in market price data, e.g. vendor, rate, city codes, etc.  |
 
