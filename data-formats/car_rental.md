@@ -16,8 +16,6 @@ Models are typically run daily, with burst or surge models run intraday (up to e
 
 We duplicate all data on our side. If you have a small data set and a data warehouse that allows it, we can re-read all data in for several years each time we run the model. This enables us to pull in updates that you may retroactively make to your data and include that auotmatically in our models. However that can be an expensive and inefficient process and therefore we can also simply pull and write new data, which is how most customers prefer to run the system. 
 
-Data on our system will persist if you change your rental management or reservation system, as it is in a standard format. 
-
 #### 2.1 Data categories
 
 The broad categories of data we need are as follows:
