@@ -101,7 +101,7 @@ We need comprehensive information across several categories, which follow. Note 
 | status | Whether the car on rent, on repair, etc. | string | No | on_rent |
 | air\_conditioner | Whether car has air conditioner/refrigeration| string | No | TRUE |
 | bluetooth | Whether car has bluetooth | | | |
-| autonomous\_level | Whether car is autonomous capable and if so what [level, 0-5](https://en.wikipedia.org/wiki/Autonomous_car) | integer | No, default is 0 | 5 |
+| autonomous\_level | Whether car is autonomous capable and if so what [level, 0-5](https://en.wikipedia.org/wiki/Autonomous_car) | integer | No | 5 |
 | heated\_seats | Whether car has heated seats | string | No | Yes |
 | cooled\_seats | Whether car has cooled seats | string | No | Yes |
 | number\_of\_doors | How many doors on the car | string | No | 5 |
