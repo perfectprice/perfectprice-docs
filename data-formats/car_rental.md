@@ -22,14 +22,13 @@ We duplicate all data on our side. If you have a small data set and a data wareh
 
 The broad categories of data we need are as follows:
 
-| Type | Description | Can be manually updated? | Can be batch updated? |
-|-------------:|:-------------|:-------------|:-------------|
-| Vehicles | Data on each vehicle in your fleet used for availability, location and cost calculations | No | Yes |
-| Locations | Data on each location or virtual location, used for cost calculations | Yes | Yes |
-| Bookings | Raw bookings in bulk or as they come in | No | Historical |
-| Rentals | Raw data on actual rentals (contracts) as they happen | No | Historical |
-| Costs | Any model you may already have on operating costs for optimizations, or raw data such as acquisition/disposal/mileage of vehicles, variable cost for pickup/delivery, or commissions by channel  | Yes | Yes |
-| Market price data | "Shopped" data on competitor prices, historical or going forward | No | Historical |  
+| Type | Description | Can be manually updated? | Can be batch updated? | Can be connected to an API? |
+|-------------:|:-------------|:-------------|:-------------|:-------------|
+| Vehicles | Data on each vehicle in your fleet used for availability, location and cost calculations | No | Yes | Yes |
+| Locations | Data on each location or virtual location, used for cost calculations | Yes | Yes | Yes |
+| Bookings | Raw bookings in bulk or as they come in | No | Yes | Yes |
+| Rentals | Raw data on actual rentals (contracts) as they happen | No | Yes | Yes |
+| Costs | Any model you may already have on operating costs for optimizations, or raw data such as acquisition/disposal/mileage of vehicles, variable cost for pickup/delivery, or commissions by channel  | Yes | No | No |
 
 #### 2.2 Note on PII
 
@@ -48,7 +47,7 @@ For one time, historical exports, we can accept 3 formats:
 * XML
 * CSV (best for direct SQL exports)
 
-If a CSV, our system will map your fields to the fields that are expected. This can be a more brittle method of data transfer and we recommenda against it for complex data structures or any data structure to be used on an ongoing basis that may change. 
+If a CSV, our system will map your fields to the fields that are expected. This can be a more brittle method of data transfer and we recommend against it for complex data structures or any data structure to be used on an ongoing basis that may change. 
 
 #### 3.2 Ongoing updates
 
@@ -168,7 +167,6 @@ Locations can be manually configured with the proper inputs during setup and con
 | shuttle | Whether the location provides a shuttle from the Airport it is associated with | BOOLEAN | No | FALSE |
 | off\_airport | Whether the location is associated with an airport but is off-airport | BOOLEAN | No | FALSE |
 
-
 #### 4.5 Reservations (or Bookings)
 
 Reservations or bookings are confirmed requests for a car, which may or may not require prepayment or deposit. They may or may not chnage. The renter may or may not show up. If the renter shows up and picks up the car, this will result in a Rental (or contract, below). Much is unknown at the time of a reservation, which is fine. 
@@ -223,7 +221,7 @@ When a car is  picked up and, generally, when a contract is issued it becomes a 
 | currency | Currency for all revenue and rate amounts | string | No | USD | 
 | customer\_id | Unique identifier for customer, possibly a hashed email address, that can be joined with other data to inform segmentation, etc. | string | No | 2k31j4lkhago9h08h34 |
 
-#### 4.7. Looks or pageviews
+#### 4.7. Looks or pageviews (Optional)
 
 When a user views a booking page, or you get a request from a GDS or online booking tool for a price quote, knowing that is important data in determining whether there is demand for a particular vehicle. 
 
@@ -251,3 +249,25 @@ Standard values of __event\_type__ for different types of events :
 | sabre | look from sabre gds |
 | worldspan | look from worldspan gds |
 | pageview | view of car on your website |
+
+### 5. Method of transfer
+
+We can provision an API for you to push updates to using the above formats, or in some limited cases, a custom format. 
+
+Alternatively, you can drop batch updates in a folder to which we are granted access, and we will poll that folder to look for updated files on a regular basis. The best practice is to create a subfolder for each day, and add raw files (json, CSV, etc.) labeled with an agreed upon naming format including time into the folder. For example:
+
+/$org_id/type_of_file/$yyyy/$mm/$dd/$hh/type_of_file.csv
+
+where:
+
+| Type | Value |
+|-------------:|:-------------|
+| $org_id | the parent folder for your organizaiton (or our organization/customer if on your server) |
+| type_of_file | the type of data being transferred, e.g., rentals, bookings, etc. | 
+| $yyyy | 4 digit year, in UST |
+| $mm | 2 digit month |
+| $dd | 2 digit day of month | 
+| $hh | 2 digit hour of the day in 24 hr clock |
+| type_of_file.csv | name of the file, preferably something descriptive matching the data like 'reservations.csv' | 
+
+Note that all times should be UST, or discussed with us in advance. 
