@@ -28,7 +28,7 @@ The broad categories of data we need are as follows:
 | Locations | Data on each location or virtual location, used for cost calculations | Yes | Yes | Yes |
 | Bookings | Raw bookings in bulk or as they come in | No | Yes | Yes |
 | Rentals | Raw data on actual rentals (contracts) as they happen | No | Yes | Yes |
-| Costs | Any model you may already have on operating costs for optimizations, or raw data such as acquisition/disposal/mileage of vehicles, variable cost for pickup/delivery, or commissions by channel  | Yes | No | No |
+| Costs | Any model you may already have on operating costs for optimizations, or raw data such as acquisition/disposal/mileage of vehicles, variable cost for pickup/delivery, or commissions by channel  | Yes | Depends | Depends |
 
 #### 2.2 Note on PII
 
