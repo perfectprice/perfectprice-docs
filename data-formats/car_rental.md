@@ -36,7 +36,13 @@ Please do *not* send personally identifiable information (PII) such as email, re
 
 ### 3 Formats
 
-The data will end up in the below formats to be consumed and used by our AI. Some customizations are possible. Remember, we can help get the data into the right format even if your system cannot.
+The data will end up in the below formats to be consumed and used by our AI. Some customizations may be possible. 
+
+Remember, we can help get the data into the right format even if your system cannot. Quickly getting us some actual data, not in this format, for us to analyze is way better than spending a lot of time/resources getting it into this format without us first reviewing it. CSV, etc. is fine.
+
+To be totally clear, precalculated numbers like utilization, expected utilization, are *useless* to our system. Our system only consumes totally raw data. The only exception to this is cost data, where it may be possible to take a pre-computed number, a static number, or add a sophisticated cost model specific to your business into our system. 
+
+If you've done a lot of work already on expected noshows, cancellation, upsells, etc–that's great! We should discuss that when we review the data with you.  
 
 #### 3.1 Historical exports
 
