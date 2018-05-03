@@ -123,6 +123,7 @@ and if failed :
 }
 ```
 
+If all records are pushed successfully, then the HTTP response code is 200, otherwise 4xx or 5xx will be returned accordingly. Also, for a general guideline, each pushed payload should not exceed $265KB in size.
 
 ### 3.2 Rates
 
