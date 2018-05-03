@@ -81,6 +81,49 @@ where ```$type``` could be one of :
     PUT
 ```
 
+
+##### Parameters
+
+None
+
+##### Returns
+
+This API will return a JSON response as follows :
+
+```json
+{
+    "type": $type,
+    "status": [
+        $status_for_1st_record,
+        $status_for_2nd_record,
+        ...
+    ]
+}
+```
+
+where a ```$status_for_i-th_record``` will look like examples below.
+
+For a successfully processed record :
+
+```json
+{
+    "status": "success",
+}
+```
+
+and if failed :
+
+```json
+{
+    "status": "failure",
+    "error": {
+        "code": $error_code,
+        "message": $error_message
+    }
+}
+```
+
+
 ### 3.2 Rates
 
 This API returns __daily__ base price per car. The time granularity is daily, while it could change if different temporal granularity is desired.
