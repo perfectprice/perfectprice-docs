@@ -2,21 +2,15 @@
 
 ### 1 Introduction
 
-This document covers booking (reservation) and rental data coming __into__ Perfect Price. This applies both when you are getting set up with Perfect Price and on an ongoing basis, so the AI can constantly learn from experience and react to market changes. 
+This document covers proprietary data from a client company into __into__ Perfect Price. This applies both when you are getting set up with Perfect Price (historical dump) and on an ongoing basis (incremental), so the AI can constantly learn from experience and react to market changes. 
 
 For market data (competitor prices, price shops, etc.) please see [the specifications for market data here](https://github.com/perfectprice/perfectprice-docs/blob/master/data-formats/competition.md). 
 
-We are __sometimes__ able to customize various data structures or import your data in the format you can easily export it in, and transform it into the format we need. So please ask us if your data does not line up perfectly with our formats! We don't expect it to. 
-
-It is __usually__ worthwhile to send us an export of data in the format you have easy access to. Sometimes we may be able to [transform](https://en.wikipedia.org/wiki/Extract,_transform,_load) it into the format we need more easily or reliably than your systems can. 
 
 ### 2 Architecture Overview
 
-Our system stores data in a hadoop cluster in the cloud, in [JSON](https://en.wikipedia.org/wiki/JSON). This is then stored and used for charting, modeling, or other purposes. Wherever possible we do all computations on the raw data, rather than importing aggregated data. 
+We collect a few categories of proprietary data as described in 2.1. For our modeling purposes, ideally, we wish to obtain historical dump of those data from past at least one year w.r.t. launch time, as well as incremental data on a regular on-going basis, e.g. every 5m or 1h, or daily, etc.
 
-Models are typically run daily, with burst or surge models run intraday (up to every 5 minutes). The more rapidly we receive data updates from your system, the more responsive and "human like" the AI can be. However, we have flexibility around frequency of updates, and not everything needs to be updated at high frequency. 
-
-We duplicate all data on our side. If you have a small data set and a data warehouse that allows it, we can re-read all data in for several years each time we run the model. This enables us to pull in updates that you may retroactively make to your data and include that auotmatically in our models. However that can be an expensive and inefficient process and therefore we can also simply pull and write new data, which is how most customers prefer to run the system. It is important to have well maintained ids so that, for example, if a booking is modified, we can update it on our side as well.
 
 #### 2.1 Data categories
 
@@ -28,7 +22,7 @@ The broad categories of data we need are as follows:
 | Locations | Data on each location or virtual location, used for cost calculations | Yes | Yes | Yes |
 | Bookings | Raw bookings in bulk or as they come in | No | Yes | Yes |
 | Rentals | Raw data on actual rentals (contracts) as they happen | No | Yes | Yes |
-| Costs | Any model you may already have on operating costs for optimizations, or raw data such as acquisition/disposal/mileage of vehicles, variable cost for pickup/delivery, or commissions by channel  | Yes | Depends | Depends |
+
 
 #### 2.2 Note on PII
 
