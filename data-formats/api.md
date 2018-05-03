@@ -68,7 +68,7 @@ pricing in place.
 where ```$type``` could be one of :
 
 | Field | Description |
-|------:|:----------|:----------|
+|------:|:----------|
 | ```locations``` | Location |
 | ```vehicles``` | Vehicles |
 | ```reservations``` | Reservations |
