@@ -57,9 +57,9 @@ This API is used to push proprietary data as specified in [Data Format] (https:/
 
 ##### URI
 
-This API returns the 15 minute multipliers per zone. Access to this API will be made at a much higher frequency
-than base price API. Ideally, this will be at every 5 minutes once all data pipeline is set up to have real time
-pricing in place.
+Access to this API will be made at a much higher frequency than base price API.
+Ideally, this will be at every 5 minutes once all data pipeline is set up to
+have real time pricing in place.
 
 ```
     https://api.pfpr.co/$version/data/$type
@@ -69,10 +69,9 @@ where ```$type``` could be one of :
 
 | Field | Description |
 |------:|:----------|
-| ```locations``` | Location |
-| ```vehicles``` | Vehicles |
-| ```reservations``` | Reservations |
-| ```rentals``` | Rentals |
+| ```inventory``` | Inventory |
+| ```reservation``` | Reservation |
+| ```rental``` | Rental |
 
 
 ##### Method
@@ -85,6 +84,10 @@ where ```$type``` could be one of :
 ##### Parameters
 
 None
+
+##### Body
+
+A CSV file that conforms to [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527).
 
 ##### Returns
 
