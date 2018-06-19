@@ -44,10 +44,14 @@ requests.get('https://auth.pfpr.co/v1.0/token?client_key=de808d252850cf982ac3992
 ```
 
 with an HTTP status code of 200, where ```$token``` is a string that must be submitted on
-subsequent API requests in ```X-Auth-Token``` header.
+subsequent API requests in ```X-Auth-Token``` header. An authentication token expires 30m
+passed last use, and expiration renews to last use time + 30m.
+
+To avoid having to re-authenticate, client server should maintain working set of auth tokens.
 
 If authentication fails, it returns corresponding error HTTP status code and a JSON
 object that contains reasons of failure. More info to be added here.
+
 
 ## 3. Supported APIs
 
@@ -79,7 +83,6 @@ where ```$type``` could be one of :
 ```
     PUT
 ```
-
 
 ##### Parameters
 
