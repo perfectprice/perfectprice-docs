@@ -153,7 +153,7 @@ This API returns __daily__ base price per car. The time granularity is daily, wh
 | ```location_code``` | Location code, e.g. "SFO" | Yes |
 | ```car_class``` | Car class, often SIPP code, e.g. "IJBR" | Yes |
 | ```start_ts``` | Start time (UTC) of period for which rates are predicted for, e.g. ISO 8601. Default is one day after this API is called. | No |
-| ```end_ts``` | End time (UTC) of period for which rates are predicted for, e.g. ISO 8601. Default is 365 days after this API is called. | No |
+| ```end_ts``` | End time (UTC) of period for which rates are predicted for, e.g. ISO 8601. Default is 364 days after this API is called. | No |
 | ```currency``` | 3-letter ISO 4217 currency code. Default "USD". | No |
 
 
