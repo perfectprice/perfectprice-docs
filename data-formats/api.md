@@ -133,7 +133,7 @@ If all records are pushed successfully, then the HTTP response code is 200, othe
 
 ### 3.2 Rates
 
-This API returns __daily__ base price per car. The time granularity is daily, while it could change if different temporal granularity is desired.
+This API returns latest rate predictions per segment over a given range.
 
 ##### URI
 ```
@@ -152,8 +152,8 @@ This API returns __daily__ base price per car. The time granularity is daily, wh
 |------:|:----------|:----------|
 | ```location_code``` | Location code, e.g. "SFO" | Yes |
 | ```car_class``` | Car class, often SIPP code, e.g. "IJBR" | Yes |
-| ```start_ts``` | Start time (UTC) of period for which rates are predicted for, e.g. ISO 8601. Default is one day after this API is called. | No |
-| ```end_ts``` | End time (UTC) of period for which rates are predicted for, e.g. ISO 8601. Default is 371 days after this API is called. | No |
+| ```start_ts``` | Start time (UTC) of period for which rates are predicted for in ISO 8601 format, e.g. "20180901T014639Z". Default is one day after this API is called. | No |
+| ```end_ts``` | End time (UTC) of period for which rates are predicted for in ISO 601 format, e.g. "20181101T000000Z". Default is 371 days after this API is called. | No |
 | ```currency``` | 3-letter ISO 4217 currency code. Default "USD". | No |
 
 
@@ -171,18 +171,43 @@ If prediction is available for this car, base price API will return the followin
     },
     "currency": $currency_code,
     "rates": [
-        $rate_array
+        $rate_dicts
     ]
 }
 ```
 
-where ```$rate_array``` is an array of rates in float type.
+where ```$rate_dicts``` is a list of dictionaries keyed by date in ISO format, with value rate dictionary keyed by lor, e.g. 
+
+```json
+'rates' : [
+    { 'date': '20180711T000000Z', 'rate': {'1-5': 628.0, '6+': 647.0} },
+    { 'date': '20180712T000000Z', 'rate': {'1-5': 620.0, '6-7': 644.0, '8+': 721.0} }
+   ]
+ ```
 
 code example:
 ```
 import requests
 request = requests.get(
-    'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20160601T014639Z&end_ts=20160602T014639Z',
+    'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20190719T000000Z&end_ts=20200719T000000Z',
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
+```
+
+example output:
+```json
+{
+    'currency': 'USD', 
+    'location_code': 'SFO', 
+    'rates': [
+                 {'date': '20190719T000000Z', 'rate': '{"1-5": 590, "6-7": 3540}'}, 
+                 {'date': '20190720T000000Z', 'rate': '{"1-5": 594, "6-7": 3564}'}, 
+                 {'date': '20190721T000000Z', 'rate': '{"1-5": 588, "6-7": 3528}'}, 
+                 {'date': '20190722T000000Z', 'rate': '{"1-5": 590, "6-7": 3540}'}
+    ], 
+    'period': { 
+                'start_ts': '20190719T000000Z',
+                'end_ts': '20200719T000000Z'
+               }, 
+    'car_class': 'ICAR'}
 ```
