@@ -201,5 +201,6 @@ example output:
                 "start_ts": "20190719T000000Z",
                 "end_ts": "20200719T000000Z"
                }, 
-    "car_class": "ICAR"}
+    "car_class": "ICAR"
+}
 ```
