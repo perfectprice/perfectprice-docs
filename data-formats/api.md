@@ -175,21 +175,13 @@ If prediction is available for this car, base price API will return the followin
     ]
 }
 ```
-
-where ```$rate_dicts``` is a list of dictionaries keyed by date in ISO format, with value rate dictionary keyed by lor, e.g. 
-
-```json
-'rates' : [
-    { 'date': '20180711T000000Z', 'rate': {'1-5': 628.0, '6+': 647.0} },
-    { 'date': '20180712T000000Z', 'rate': {'1-5': 620.0, '6-7': 644.0, '8+': 721.0} }
-   ]
- ```
+where ```$rate_dicts``` is a list of dictionaries keyed by date in ISO format, with value rate dictionary keyed by lor.
 
 code example:
 ```
 import requests
 request = requests.get(
-    'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20190719T000000Z&end_ts=20200719T000000Z',
+    'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20190719T000000Z&end_ts=20200719T000000Z,
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
 ```
@@ -197,17 +189,17 @@ request = requests.get(
 example output:
 ```json
 {
-    'currency': 'USD', 
-    'location_code': 'SFO', 
-    'rates': [
-                 {'date': '20190719T000000Z', 'rate': '{"1-5": 590, "6-7": 3540}'}, 
-                 {'date': '20190720T000000Z', 'rate': '{"1-5": 594, "6-7": 3564}'}, 
-                 {'date': '20190721T000000Z', 'rate': '{"1-5": 588, "6-7": 3528}'}, 
-                 {'date': '20190722T000000Z', 'rate': '{"1-5": 590, "6-7": 3540}'}
+    "currency": "USD", 
+    "location_code": "SFO", 
+    "rates": [
+                 {"date": "20190719T000000Z", "rate": {"1-5": 590.2, "6-7": 3540}}, 
+                 {"date": "20190720T000000Z", "rate": {"1-5": 594, "6-7": 3564.1}}, 
+                 {"date": "20190721T000000Z", "rate": {"1-5": 588.5, "6-7": 3528}}, 
+                 {"date": "20190722T000000Z", "rate": {"1-5": 590, "6-7": 3540}}
     ], 
-    'period': { 
-                'start_ts': '20190719T000000Z',
-                'end_ts': '20200719T000000Z'
+    "period": { 
+                "start_ts": "20190719T000000Z",
+                "end_ts": "20200719T000000Z"
                }, 
-    'car_class': 'ICAR'}
+    "car_class": "ICAR"}
 ```
