@@ -205,13 +205,33 @@ If prediction is available for this car, base price API will return the followin
     ]
 }
 ```
-where ```$rate_dicts``` is a list of dictionaries keyed by date in ISO format, with value rate dictionary keyed by lor.
+where ```$rate_dicts``` is a list of dictionaries in the following format :
 
-code example:
+```
+{
+    "date": "$pick_up_date",
+    "rate":
+    [
+        {
+            "lor": "$length_of_rental",
+            "amount": $rate_amount
+        },
+        ...
+    ]
+}
+```
+
+where ```$pick_up_date``` is the date during which rates in "rate" dictionary apply, and
+```$lengh_of_rental``` is a string that specify length of rental as ```$min-$max``` which
+means a trip of length ```$min``` days to ```$max``` days, or ```$min+``` which means a
+trip of length ```$min``` or more days. ```$rate_amount``` is the rate for given length
+of rental.
+
+Code example:
 ```
 import requests
 request = requests.get(
-    'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20190719T000000Z&end_ts=20200719T000000Z,
+    'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20190719T060100Z&end_ts=20200720T060100Z,
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
 ```
@@ -255,8 +275,8 @@ Example
     ], 
     "period":
     { 
-        "start_ts": "20190719T000000Z",
-        "end_ts": "20200719T000000Z"
+        "start_ts": "20190719T060100Z",
+        "end_ts": "20200720T060100Z"
     },
     "car_class": "ICAR"
 }
