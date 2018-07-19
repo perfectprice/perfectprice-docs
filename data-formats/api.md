@@ -135,15 +135,26 @@ If all records are pushed successfully, then the HTTP response code is 200, othe
 
 | Response Code | Error Code | Description |
 |------:|:----------|:----------|
-| 200 | 0 (Success) | Data Successfully Uploaded |
-| 401 | (Unauthorized) | Invalid/Missing Auth Token |
-| 403 | (Forbidden) | Forbidden Access |
-| 405 | (Bad Method) | Bad Method |
-| 409 | (Invalid Type) | Invalid Request, e.g. gibberish $type |
-| 409 | (Invalid Request) | Invalid Request, e.g. gibberish $type |
-| 413 | (Over Limit) | Data Size > 256KB |
-| 422 | (Bad Data) | Corrupt/Invalid/Empty Data |
+| 200 | SUCCESS | Data Successfully Uploaded |
+| 401 | ERROR_INVALID_TOKEN | Invalid/Missing Auth Token |
+| 403 | ERROR_FORBIDDEN | Forbidden Access |
+| 405 | ERROR_BAD_METHOD | Bad Method |
+| 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters, e.g. gibberish $type |
+| 413 | ERROR_OVER_LIMIT | Data Size > 256KB |
+| 422 | ERROR_BAD_DATA | Corrupt/Invalid/Empty Data |
 
+Example :
+
+```
+# HTTP 403
+{
+    "status": "falure",
+    "error": {
+        "code": "ERROR_FORBIDDEN",
+        "message": "Invalid/Missing Auth Token"
+    }
+}
+```
 
 
 ### 3.2 Rates
@@ -200,4 +211,27 @@ request = requests.get(
     'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20160601T014639Z&end_ts=20160602T014639Z',
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
+```
+
+##### Responses
+
+| Response Code | Error Code | Description |
+|------:|:----------|:----------|
+| 200 | SUCCESS | Data Successfully Uploaded |
+| 401 | ERROR_INVALID_TOKEN | Invalid/Missing Auth Token |
+| 403 | ERROR_FORBIDDEN | Forbidden Access |
+| 405 | ERROR_BAD_METHOD | Bad Method |
+| 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters, e.g. non-existing $location or $start_ts > $end_ts |
+
+Example :
+
+```
+# HTTP 409
+{
+    "status": "falure",
+    "error": {
+        "code": "ERROR_INVALID_PARAMETERS",
+        "message": "start_ts (20180712T000000Z) is before end_ts (20180711T000000Z)."
+    }
+}
 ```
