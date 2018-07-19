@@ -253,7 +253,7 @@ Example
                     "amount": 590.2
                 },
                 {
-                    "lor": "6-7",
+                    "lor": "6+",
                     "amount": 3540
                 }
             ]
@@ -267,7 +267,7 @@ Example
                     "amount": 594
                 },
                 {
-                    "lor": "6-7",
+                    "lor": "6+",
                     "amount": 3564.1
                 }
             ]
