@@ -99,7 +99,8 @@ This API will return a JSON response as follows :
 ```json
 {
     "type": $type,
-    "status": [
+    "status":
+    [
         $status_for_1st_record,
         $status_for_2nd_record,
         ...
@@ -122,7 +123,8 @@ and if failed :
 ```json
 {
     "status": "failure",
-    "error": {
+    "error":
+    {
         "code": $error_code,
         "message": $error_message
     }
@@ -131,11 +133,10 @@ and if failed :
 
 If all records are pushed successfully, then the HTTP response code is 200, otherwise 4xx or 5xx will be returned accordingly. Also, for a general guideline, each pushed payload should not exceed 256KB in size.
 
-##### Responses
+##### Error Responses
 
 | Response Code | Error Code | Description |
 |------:|:----------|:----------|
-| 200 | SUCCESS | Data Successfully Uploaded |
 | 401 | ERROR_INVALID_TOKEN | Invalid/Missing Auth Token |
 | 403 | ERROR_FORBIDDEN | Forbidden Access |
 | 405 | ERROR_BAD_METHOD | Bad Method |
@@ -145,11 +146,12 @@ If all records are pushed successfully, then the HTTP response code is 200, othe
 
 example :
 
-```
+```json
 # HTTP 403
 {
     "status": "falure",
-    "error": {
+    "error":
+    {
         "code": "ERROR_FORBIDDEN",
         "message": "Invalid/Missing Auth Token"
     }
@@ -191,12 +193,14 @@ If prediction is available for this car, base price API will return the followin
 {
     "location_code": $location_code,
     "car_class": $car_class,
-    "period": {
+    "period":
+    {
         "start_ts": $start_ts,
         "end_ts": $end_ts
     },
     "currency": $currency_code,
-    "rates": [
+    "rates":
+    [
         $rate_dicts
     ]
 }
@@ -212,42 +216,69 @@ request = requests.get(
 )
 ```
 
-example output:
+Example
+
 ```json
 {
     "currency": "USD", 
     "location_code": "SFO", 
-    "rates": [
-                 {"date": "20190719T000000Z", "rate": {"1-5": 590.2, "6-7": 3540}}, 
-                 {"date": "20190720T000000Z", "rate": {"1-5": 594, "6-7": 3564.1}}, 
-                 {"date": "20190721T000000Z", "rate": {"1-5": 588.5, "6-7": 3528}}, 
-                 {"date": "20190722T000000Z", "rate": {"1-5": 590, "6-7": 3540}}
+    "rates":
+    [
+        {
+            "date": "20190719T000000Z",
+            "rate": {
+                "1-5": 590.2,
+                "6-7": 3540
+            }
+        }, 
+        {
+            "date": "20190720T000000Z",
+            "rate": {
+                "1-5": 594,
+                "6-7": 3564.1
+            }
+        }, 
+        {
+            "date": "20190721T000000Z",
+            "rate": {
+                "1-5": 588.5,
+                "6-7": 3528
+            }
+        }, 
+        {
+            "date": "20190722T000000Z",
+            "rate": {
+                "1-5": 590,
+                "6-7": 3540
+            }
+        }
     ], 
-    "period": { 
-                "start_ts": "20190719T000000Z",
-                "end_ts": "20200719T000000Z"
-               }, 
+    "period":
+    { 
+        "start_ts": "20190719T000000Z",
+        "end_ts": "20200719T000000Z"
+    }, 
     "car_class": "ICAR"
 }
 ```
 
-##### Responses
+##### Error Responses
 
 | Response Code | Error Code | Description |
 |------:|:----------|:----------|
-| 200 | SUCCESS | Data Successfully Uploaded |
 | 401 | ERROR_INVALID_TOKEN | Invalid/Missing Auth Token |
 | 403 | ERROR_FORBIDDEN | Forbidden Access |
 | 405 | ERROR_BAD_METHOD | Bad Method |
 | 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters, e.g. non-existing $location or $start_ts > $end_ts |
 
-example :
+Example :
 
-```
+```json
 # HTTP 409
 {
     "status": "falure",
-    "error": {
+    "error":
+    {
         "code": "ERROR_INVALID_PARAMETERS",
         "message": "start_ts (20180712T000000Z) is before end_ts (20180711T000000Z)."
     }
