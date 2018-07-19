@@ -112,7 +112,7 @@ where a ```$status_for_i-th_record``` will look like examples below.
 
 For a successfully processed record :
 
-```json
+```
 {
     "status": "success",
 }
@@ -146,7 +146,7 @@ If all records are pushed successfully, then the HTTP response code is 200, othe
 
 example :
 
-```json
+```
 # HTTP 403
 {
     "status": "falure",
@@ -189,7 +189,7 @@ This API returns latest rate predictions per segment over a given range.
 
 If prediction is available for this car, base price API will return the following JSON object :
 
-```json
+```
 {
     "location_code": $location_code,
     "car_class": $car_class,
@@ -218,7 +218,7 @@ request = requests.get(
 
 Example
 
-```json
+```
 {
     "currency": "USD", 
     "location_code": "SFO", 
@@ -273,7 +273,7 @@ Example
 
 Example :
 
-```json
+```
 # HTTP 409
 {
     "status": "falure",
