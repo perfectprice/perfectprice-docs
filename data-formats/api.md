@@ -131,6 +131,21 @@ and if failed :
 
 If all records are pushed successfully, then the HTTP response code is 200, otherwise 4xx or 5xx will be returned accordingly. Also, for a general guideline, each pushed payload should not exceed 256KB in size.
 
+##### Responses
+
+| Response Code | Error Code | Description |
+|------:|:----------|:----------|
+| 200 | 0 (Success) | Data Successfully Uploaded |
+| 401 | (Unauthorized) | Invalid/Missing Auth Token |
+| 403 | (Forbidden) | Forbidden Access |
+| 405 | (Bad Method) | Bad Method |
+| 409 | (Invalid Type) | Invalid Request, e.g. gibberish $type |
+| 409 | (Invalid Request) | Invalid Request, e.g. gibberish $type |
+| 413 | (Over Limit) | Data Size > 256KB |
+| 422 | (Bad Data) | Corrupt/Invalid/Empty Data |
+
+
+
 ### 3.2 Rates
 
 This API returns __daily__ base price per car. The time granularity is daily, while it could change if different temporal granularity is desired.
