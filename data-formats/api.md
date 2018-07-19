@@ -96,7 +96,7 @@ A CSV file that conforms to [Data Format] (https://docs.google.com/spreadsheets/
 
 This API will return a JSON response as follows :
 
-```json
+```
 {
     "type": $type,
     "status":
@@ -120,7 +120,7 @@ For a successfully processed record :
 
 and if failed :
 
-```json
+```
 {
     "status": "failure",
     "error":
