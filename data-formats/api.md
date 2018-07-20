@@ -74,7 +74,7 @@ Ideally, this will be at every 5 minutes once all data pipeline is set up to
 have real time pricing in place.
 
 ```
-    https://api.pfpr.co/$version/data/$type
+    https://api.pfpr.co/$version/data/$type/[$date]
 ```
 
 where ```$type``` could be one of :
@@ -98,7 +98,36 @@ None
 
 ##### Body
 
-A CSV file that conforms to [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527).
+```json
+{
+    "date": $date,
+    "data": $data
+}
+```
+
+where an optional ```$date``` (default = submission date in UTC) is the date for
+which the data belongs to. If ```$date``` is present, then the provided data
+will be associated to the given date. It must be in ```YYYY/mm/dd``` format.
+
+```$date``` is CSV data that conforms to [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527).
+
+Data pushed at any time of day should contain data for yesterday UTC. For instance, data pushed at
+```2018/10/05 1AM UTC``` should contain data collected during the period of :
+
+```
+[2018/10/04 00:00:00 UTC, 2018/10/05 00:00:00 UTC)
+```
+
+For historical data, ALL historical data could be pushed into the 1st day of push, i.e. first day's
+data pushed at ```2018/10/05 1AM UTC``` should contain data collected during the period of :
+
+```
+[first_day_of_data, 2018/10/05 00:00:00 UTC)
+```
+
+or if preferred, they could be broken into each day in history and can be pushed separately.
+The latter approach will make data size smaller than 256KB. If it is necessary to push data > 256KB,
+then please contact us for further discussion.
 
 ##### Returns
 
