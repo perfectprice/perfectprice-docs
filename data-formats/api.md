@@ -57,7 +57,7 @@ object that contains reasons of failure. More info to be added here.
 
 ### 3.1 Pushing Data
 
-This API is used to push proprietary data as specified in [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527) to Perfect Price. This API assumes that input data is in __JSON__ format.
+This API is used to push proprietary data as specified in [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527) to Perfect Price.
 
 ##### URI
 
