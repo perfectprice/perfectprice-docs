@@ -56,7 +56,7 @@ object that contains reasons of failure.
 
 | Response Code | Error Code | Description |
 |------:|:----------|:----------|
-| 401 | ERROR_UNAHORIZED | Invalid/Missing Credential |
+| 401 | ERROR_UNAUTHORIZED | Invalid/Missing Credential |
 | 405 | ERROR_BAD_METHOD | Bad Method |
 | 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters, e.g. gibberish $type |
 
@@ -176,7 +176,7 @@ example :
     "error":
     {
         "code": "ERROR_FORBIDDEN",
-        "message": "Invalid/Missing Auth Token"
+        "message": "Forbidden Access"
     }
 }
 ```
