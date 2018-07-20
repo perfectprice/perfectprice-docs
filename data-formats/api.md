@@ -205,7 +205,8 @@ If prediction is available for this car, base price API will return the followin
     ]
 }
 ```
-where ```$rate_dicts``` is a list of dictionaries in the following format :
+where ```$start_ts``` and ```$end_ts``` are the same value as provided in the parameters,
+while ```$rate_dicts``` is a list of dictionaries in the following format :
 
 ```
 {
