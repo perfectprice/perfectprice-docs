@@ -74,7 +74,7 @@ Ideally, this will be at every 5 minutes once all data pipeline is set up to
 have real time pricing in place.
 
 ```
-    https://api.pfpr.co/$version/data/$type/
+    https://api.pfpr.co/$version/data/$type
 ```
 
 where ```$type``` could be one of :
