@@ -232,7 +232,7 @@ Code example:
 ```
 import requests
 request = requests.get(
-    'https://api.pfpr.co/v1.0/base?location_code=SFO&car_class=ICAR&start_ts=20190719T060100Z&end_ts=20200720T060100Z,
+    'https://api.pfpr.co/v1.0/rates?location_code=SFO&car_class=ICAR&start_ts=20190719T060100Z&end_ts=20200720T060100Z,
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
 ```
