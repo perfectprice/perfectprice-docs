@@ -50,7 +50,15 @@ passed last use, and expiration renews to last use time + 30m.
 To avoid having to re-authenticate, client server should maintain working set of auth tokens.
 
 If authentication fails, it returns corresponding error HTTP status code and a JSON
-object that contains reasons of failure. More info to be added here.
+object that contains reasons of failure.
+
+##### Error Responses
+
+| Response Code | Error Code | Description |
+|------:|:----------|:----------|
+| 401 | ERROR_UNAHORIZED | Invalid/Missing Credential |
+| 405 | ERROR_BAD_METHOD | Bad Method |
+| 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters, e.g. gibberish $type |
 
 
 ## 3. Supported APIs
