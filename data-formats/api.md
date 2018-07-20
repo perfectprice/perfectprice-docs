@@ -111,6 +111,15 @@ will be associated to the given date. It must be in ```YYYY/mm/dd``` format.
 
 ```$date``` is CSV data that conforms to [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527).
 
+an example using python client:
+```
+import requests
+response = self.client.post('https://api.pfpr.co/v1.0/data/rental',
+                            data={'data': $rental_csv, 'date': '2018/05/18'},
+                            headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'})
+```
+
+
 Data pushed at any time of day should contain data for yesterday UTC. For instance, data pushed at
 ```2018/10/05 1AM UTC``` should contain data collected during the period of :
 
