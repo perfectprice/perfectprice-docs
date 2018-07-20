@@ -172,7 +172,7 @@ example :
 ```
 # HTTP 403
 {
-    "status": "falure",
+    "status": "failure",
     "error":
     {
         "code": "ERROR_FORBIDDEN",
