@@ -102,34 +102,20 @@ A CSV file that conforms to [Data Format] (https://docs.google.com/spreadsheets/
 
 ##### Returns
 
-This API will return a JSON response as follows :
+At a successful push  :
 
 ```
 {
     "type": $type,
-    "status":
-    [
-        $status_for_1st_record,
-        $status_for_2nd_record,
-        ...
-    ]
+    "status": "success"
 }
 ```
 
-where a ```$status_for_i-th_record``` will look like examples below.
-
-For a successfully processed record :
+and at failure :
 
 ```
 {
-    "status": "success",
-}
-```
-
-and if failed :
-
-```
-{
+    "type": $type,
     "status": "failure",
     "error":
     {
