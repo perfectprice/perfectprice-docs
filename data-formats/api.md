@@ -243,11 +243,11 @@ Example
 {
     "currency": "USD", 
     "location_code": "SFO", 
-    "rates":
+    "predictions":
     [
         {
             "date": "20190719T000000Z",
-            "rate":
+            "rates":
             [
                 {
                     "lor": "1-5",
@@ -261,7 +261,7 @@ Example
         }, 
         {
             "date": "20190720T000000Z",
-            "rate":
+            "rates":
             [
                 {
                     "lor": "1-5",
