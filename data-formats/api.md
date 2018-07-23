@@ -9,7 +9,7 @@ To access any API, first one must get an access token by authenticating using au
 ##### URI
 
 ```
-    https://auth.pfpr.co/$version/token
+    https://auth.perfectprice.com/$version/token
 ```
 
 where ```$version``` is the version of authentication API. Use ```v1.0```.
@@ -40,7 +40,7 @@ If authentication is successful, auth API will return the following JSON object 
 an example using python client:
 ```
 import requests
-requests.get('https://auth.pfpr.co/v1.0/token?client_key=de808d252850cf982ac3992e583e4398&client_secret=842277b6356058b648639601fbade6a8&hash=0c55451823bad3e61412d89839fc368e')
+requests.get('https://auth.perfectprice.com/v1.0/token?client_key=de808d252850cf982ac3992e583e4398&client_secret=842277b6356058b648639601fbade6a8&hash=0c55451823bad3e61412d89839fc368e')
 ```
 
 with an HTTP status code of 200, where ```$token``` is a string that must be submitted on
@@ -74,7 +74,7 @@ Ideally, this will be at every 5 minutes once all data pipeline is set up to
 have real time pricing in place.
 
 ```
-    https://api.pfpr.co/$version/data/$type
+    https://api.perfectprice.com/$version/data/$type
 ```
 
 where ```$type``` could be one of :
@@ -114,7 +114,7 @@ will be associated to the given date. It must be in ```YYYY/mm/dd``` format.
 an example using python client:
 ```
 import requests
-response = self.client.post('https://api.pfpr.co/v1.0/data/rental',
+response = self.client.post('https://api.perfectprice.com/v1.0/data/rental',
                             data={'data': $rental_csv, 'date': '2018/05/18'},
                             headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'})
 ```
@@ -197,7 +197,7 @@ This API returns latest rate predictions per segment over a given range.
 
 ##### URI
 ```
-    https://api.pfpr.co/$version/rates
+    https://api.perfectprice.com/$version/rates
 ```
 
 ##### Method
@@ -264,7 +264,7 @@ Code example:
 ```
 import requests
 request = requests.get(
-    'https://api.pfpr.co/v1.0/rates?location_code=SFO&car_class=ICAR&start_ts=20190719T060100Z&end_ts=20200720T060100Z,
+    'https://api.perfectprice.com/v1.0/rates?location_code=SFO&car_class=ICAR&start_ts=20190719T060100Z&end_ts=20200720T060100Z,
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
 ```
