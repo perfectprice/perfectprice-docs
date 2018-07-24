@@ -176,16 +176,18 @@ If all records are pushed successfully, then the HTTP response code is 200, othe
 | 413 | ERROR_OVER_LIMIT | Data Size > 256KB |
 | 422 | ERROR_BAD_DATA | Corrupt/Invalid/Empty Data |
 
-example :
+*Note that Error Code will be an integer, not the string as shown above. We put a symbolic name here for reference only.
+
+Example :
 
 ```
-# HTTP 403
+# HTTP 409
 {
     "status": "failure",
     "error":
     {
-        "code": "ERROR_FORBIDDEN",
-        "message": "Forbidden Access"
+        "code": 2001,
+        "message": "Invalid type : sldkfjsld"
     }
 }
 ```
