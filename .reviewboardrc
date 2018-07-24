@@ -1,0 +1,3 @@
+REVIEWBOARD_URL = "http://review.pfpr.co"
+REPOSITORY = "perfectprice-docs"
+TRACKING_BRANCH = "origin/master"
