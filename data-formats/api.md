@@ -109,7 +109,7 @@ where an optional ```$date``` (default = submission date in UTC) is the date for
 which the data belongs to. If ```$date``` is present, then the provided data
 will be associated to the given date. It must be in ```YYYY/mm/dd``` format.
 
-```$date``` is CSV data that conforms to [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527).
+```$data``` is CSV data that conforms to [Data Format] (https://docs.google.com/spreadsheets/d/1JgDXeZpBNOmyEuZzC3nCRfMnsVITyDRmkcFnXSFrQd8/edit#gid=1661905527).
 
 an example using python client:
 ```
