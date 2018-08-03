@@ -58,7 +58,7 @@ object that contains reasons of failure.
 |------:|:----------|:----------|
 | 401 | ERROR_UNAUTHORIZED | Invalid/Missing Credential |
 | 405 | ERROR_BAD_METHOD | Bad Method |
-| 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters, e.g. gibberish $type |
+| 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters |
 
 
 ## 3. Supported APIs
