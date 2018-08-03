@@ -169,7 +169,6 @@ If all records are pushed successfully, then the HTTP response code is 200, othe
 | Response Code | Error Code | Description |
 |------:|:----------|:----------|
 | 401 | ERROR_INVALID_TOKEN | Invalid/Missing Auth Token |
-| 403 | ERROR_FORBIDDEN | Forbidden Access |
 | 405 | ERROR_BAD_METHOD | Bad Method |
 | 409 | ERROR_INVALID_PARAMETERS | Invalid Parameters, e.g. gibberish $type |
 | 413 | ERROR_OVER_LIMIT | Data Size > 256KB |
