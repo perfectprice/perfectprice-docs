@@ -210,10 +210,10 @@ This API returns latest rate predictions per segment over a given range.
 
 | Field | Description | Required |
 |------:|:----------|:----------|
-| ```location_code``` | Location code, e.g. "SFO" | Yes |
-| ```car_class``` | Car class, often SIPP code, e.g. "IJBR" | Yes |
-| ```start_ts``` | Start time (UTC) of period for which rates are predicted for in ISO 8601 format, e.g. "20180901T014639Z". Default is one day after this API is called. | No |
-| ```end_ts``` | End time (UTC) of period for which rates are predicted for in ISO 601 format, e.g. "20181101T000000Z". Default is 371 days after this API is called. | No |
+| ```location_code``` | Location code, e.g. "SFO", "Mayfair" | Yes |
+| ```car_class``` | Car class or Property ID, often SIPP code, e.g. "IJBR", "12345" | Yes |
+| ```start_ts``` | Start time (UTC) of period for which rates are predicted for in ISO 8601 format, e.g. "20180901T014639Z". | Yes |
+| ```end_ts``` | End time (UTC) of period for which rates are predicted for in ISO 601 format, e.g. "20181101T000000Z". | Yes |
 | ```currency``` | 3-letter ISO 4217 currency code. Default "USD". | No |
 
 
