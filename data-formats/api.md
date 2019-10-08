@@ -212,8 +212,8 @@ This API returns latest rate predictions per segment over a given range.
 
 | Field | Description | Required |
 |------:|:----------|:----------|
-| ```location_code``` | Location code, e.g. "SFO", "Mayfair" | Yes |
-| ```car_class``` | Car class or Property ID, often SIPP code, e.g. "IJBR", "12345" | Yes |
+| ```location_code``` | Neighborhood or City where the property is located, e.g. "Mayfair" | Yes |
+| ```car_class``` | Property ID, often SIPP code, e.g. "12255" | Yes |
 | ```start_ts``` | Start time (UTC) of period for which rates are predicted for in ISO 8601 format, e.g. "20180901T000000Z". | Yes |
 | ```end_ts``` | End time (UTC) of period for which rates are predicted for in ISO 601 format, e.g. "20181101T000000Z". | Yes |
 | ```currency``` | 3-letter ISO 4217 currency code. Default "USD". | No |
@@ -225,30 +225,34 @@ If prediction is available for this car, base price API will return the followin
 
 ```
 {
+    "currency": "GBP",
     "location_code": $location_code,
-    "car_class": $car_class,
-    "period":
-    {
-        "start_ts": $start_ts,
-        "end_ts": $end_ts
+    "period": {
+        "end_ts": $end_ts,
+        "start_ts": $start_ts
     },
-    "currency": $currency_code,
-    "rates":
-    [
-        $rate_dicts
+    "car_class": $car_class,
+    "predictions": [
+        {
+            "date": $check_in_date,
+            "rates": [
+                $rate_dicts
+            ]
+        }
     ]
 }
 ```
+
 where ```$start_ts``` and ```$end_ts``` are the same value as provided in the parameters,
 while ```$rate_dicts``` is a list of dictionaries in the following format :
 
 ```
 {
-    "date": "$pick_up_date",
+    "date": "$check_in_date",
     "rate":
     [
         {
-            "lor": "$length_of_rental",
+            "lor": "$length_of_stay",
             "amount": $rate_amount
         },
         ...
@@ -256,17 +260,17 @@ while ```$rate_dicts``` is a list of dictionaries in the following format :
 }
 ```
 
-where ```$pick_up_date``` is the date during which rates in "rate" dictionary apply, and
-```$lengh_of_rental``` is a string that specify length of rental as ```$min-$max``` which
-means a trip of length ```$min``` days to ```$max``` days, or ```$min+``` which means a
-trip of length ```$min``` or more days. ```$rate_amount``` is the rate for given length
+where ```$check_in_date``` is the date during which rates in "rate" dictionary apply, and
+```$length_of_stay``` is a string that specify length of stay as ```$min-$max``` which
+means a rental of length ```$min``` days to ```$max``` days, or ```$min+``` which means a
+rental of length ```$min``` or more days. ```$rate_amount``` is the rate for given length
 of rental.
 
 Code example:
 ```
 import requests
 request = requests.get(
-    'https://api.pfpr.co/v1.0/rates?location_code=SFO&car_class=ICAR&start_ts=20190719T060100Z&end_ts=20200720T060100Z,
+    'https://api.pfpr.co/v1.0/rates?location_code=Mayfair&car_class=15046&currency=GBP&start_ts=20191001T000000Z&end_ts=20191002T000000Z,
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
 ```
@@ -275,45 +279,49 @@ Example
 
 ```
 {
-    "currency": "USD", 
-    "location_code": "SFO", 
-    "predictions":
-    [
+    "currency": "GBP",
+    "location_code": "Mayfair",
+    "period": {
+        "end_ts": "20191002T000000Z",
+        "start_ts": "20191001T000000Z"
+    },
+    "car_class": "15046",
+    "predictions": [
         {
-            "date": "20190719T000000Z",
-            "rates":
-            [
+            "date": "20191001T000000Z",
+            "rates": [
                 {
-                    "lor": "1-5",
-                    "amount": 590.2
+                    "lor": "7-7",
+                    "amount": 2445
                 },
                 {
-                    "lor": "6+",
-                    "amount": 3540
+                    "lor": "1-1",
+                    "amount": 272
+                },
+                {
+                    "lor": "28-28",
+                    "amount": 7870
                 }
             ]
-        }, 
+        },
         {
-            "date": "20190720T000000Z",
-            "rates":
-            [
+            "date": "20191002T000000Z",
+            "rates": [
                 {
-                    "lor": "1-5",
-                    "amount": 594
+                    "lor": "7-7",
+                    "amount": 2412
                 },
                 {
-                    "lor": "6+",
-                    "amount": 3564.1
+                    "lor": "1-1",
+                    "amount": 299
+                },
+                {
+                    "lor": "28-28",
+                    "amount": 7880
                 }
             ]
         }
-    ], 
-    "period":
-    { 
-        "start_ts": "20190719T060100Z",
-        "end_ts": "20200720T060100Z"
-    },
-    "car_class": "ICAR"
+    ]
 }
 ```
 
