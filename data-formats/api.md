@@ -225,7 +225,7 @@ If prediction is available for this car, base price API will return the followin
 
 ```
 {
-    "currency": "GBP",
+    "currency": $currency,
     "location_code": $location_code,
     "period": {
         "end_ts": $end_ts,
@@ -248,11 +248,11 @@ while ```$rate_dicts``` is a list of dictionaries in the following format :
 
 ```
 {
-    "date": "$check_in_date",
+    "date": $check_in_date,
     "rate":
     [
         {
-            "lor": "$length_of_stay",
+            "lor": $length_of_stay,
             "amount": $rate_amount
         },
         ...
