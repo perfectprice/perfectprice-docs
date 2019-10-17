@@ -212,28 +212,27 @@ This API returns latest rate predictions per segment over a given range.
 
 | Field | Description | Required |
 |------:|:----------|:----------|
-| ```location_code``` | Neighborhood or City where the property is located, e.g. "Mayfair" | Yes |
-| ```car_class``` | Property ID, often SIPP code, e.g. "12255" | Yes |
-| ```start_ts``` | Start time (UTC) of period for which rates are predicted for in ISO 8601 format, e.g. "20180901T000000Z". | Yes |
-| ```end_ts``` | End time (UTC) of period for which rates are predicted for in ISO 601 format, e.g. "20181101T000000Z". | Yes |
+| ```property_id``` | Comma-separated property IDs, e.g. "12255" or "2626,333". If not supplied, the API returns rates for all active properties. | No |
+| ```location``` | Neighborhood or City where the property is located, e.g. "Mayfair" or "Wembley,South_Kensington". | No |
+| ```start_ts``` | Start time (UTC) of period for which rates are predicted for in ISO 8601 format, e.g. "20190901T000000Z". If not supplied, the default is the current UTC date. | No |
+| ```end_ts``` | End time (UTC) of period for which rates are predicted for in ISO 601 format, e.g. "20201101T000000Z". If not supplied, the default is 365 days from the current UTC date. | No |
 | ```currency``` | 3-letter ISO 4217 currency code. Default "USD". | No |
 
 
 ##### Returns
 
-If prediction is available for this car, base price API will return the following JSON object :
+If prediction is available for this property, base price API will return the following JSON object :
 
 ```
 {
     "currency": $currency,
-    "location_code": $location_code,
     "period": {
         "end_ts": $end_ts,
         "start_ts": $start_ts
     },
-    "car_class": $car_class,
     "predictions": [
         {
+            "property_id": $property_id,
             "date": $check_in_date,
             "rates": [
                 $rate_dicts
@@ -270,7 +269,7 @@ Code example:
 ```
 import requests
 request = requests.get(
-    'https://api.pfpr.co/v1.0/rates?location_code=Mayfair&car_class=15046&currency=GBP&start_ts=20191001T000000Z&end_ts=20191002T000000Z,
+    'https://api.pfpr.co/v1.0/rates?property_id=15046&currency=GBP&start_ts=20191001T000000Z&end_ts=20191002T000000Z',
     headers={'X-Auth-Token': '1d20019491fb534ed276712bccda3282'}
 )
 ```
@@ -279,47 +278,47 @@ Example
 
 ```
 {
-    "currency": "GBP",
-    "location_code": "Mayfair",
+    "currency": "GBP", 
     "period": {
-        "end_ts": "20191002T000000Z",
+        "end_ts": "20191002T000000Z", 
         "start_ts": "20191001T000000Z"
-    },
-    "car_class": "15046",
+    }, 
     "predictions": [
         {
-            "date": "20191001T000000Z",
+            "date": "20191001T000000Z", 
             "rates": [
                 {
-                    "lor": "7-7",
-                    "amount": 2445
-                },
+                    "lor": "7-7", 
+                    "amount": 2331
+                }, 
                 {
-                    "lor": "1-1",
-                    "amount": 272
-                },
+                    "lor": "1-1", 
+                    "amount": 262
+                }, 
                 {
-                    "lor": "28-28",
-                    "amount": 7870
+                    "lor": "28-28", 
+                    "amount": 7889
                 }
-            ]
-        },
+            ], 
+            "property_id": "15046"
+        }, 
         {
-            "date": "20191002T000000Z",
+            "date": "20191002T000000Z", 
             "rates": [
                 {
-                    "lor": "7-7",
-                    "amount": 2412
-                },
+                    "lor": "7-7", 
+                    "amount": 2321
+                }, 
                 {
-                    "lor": "1-1",
-                    "amount": 299
-                },
+                    "lor": "1-1", 
+                    "amount": 308
+                }, 
                 {
-                    "lor": "28-28",
-                    "amount": 7880
+                    "lor": "28-28", 
+                    "amount": 7893
                 }
-            ]
+            ], 
+            "property_id": "15046"
         }
     ]
 }
